@@ -51,6 +51,7 @@ class AutomappingManager;
 class ConsoleDock;
 class DocumentManager;
 class Editor;
+class AiDock;
 class IssuesDock;
 class LocatorSource;
 class LocatorWidget;
@@ -244,6 +245,7 @@ private:
     ConsoleDock *mConsoleDock;
     ProjectDock *mProjectDock;
     IssuesDock *mIssuesDock;
+    AiDock *mAiDock;
     PropertyTypesEditor *mPropertyTypesEditor;
     QPointer<LocatorWidget> mLocatorWidget;
     QPointer<QWidget> mPopupWidget;

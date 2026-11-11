@@ -34,6 +34,7 @@
 #include "addremovetileset.h"
 #include "automappingmanager.h"
 #include "commandmanager.h"
+#include "aidock.h"
 #include "consoledock.h"
 #include "documentmanager.h"
 #include "donationpopup.h"
@@ -382,24 +383,29 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mProjectDock = new ProjectDock(this);   // uses some actions registered above
     mConsoleDock = new ConsoleDock(this);
     mIssuesDock = new IssuesDock(this);
+    mAiDock = new AiDock(this);
 
     addDockWidget(Qt::LeftDockWidgetArea, mProjectDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
     addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
+    addDockWidget(Qt::RightDockWidgetArea, mAiDock);
     tabifyDockWidget(mConsoleDock, mIssuesDock);
 
     mConsoleDock->setVisible(false);
     mIssuesDock->setVisible(false);
+    mAiDock->setVisible(false);
 
     ActionManager::registerAction(mProjectDock->toggleViewAction(), "ViewProject");
     ActionManager::registerAction(mConsoleDock->toggleViewAction(), "ViewConsole");
     ActionManager::registerAction(mIssuesDock->toggleViewAction(), "ViewIssues");
+    ActionManager::registerAction(mAiDock->toggleViewAction(), "ViewAiGenerator");
 
     // A shortcut only triggers when its action has been added to a widget, and
     // the 'Views and Toolbars' menu is rebuilt each time it is shown.
     addAction(mProjectDock->toggleViewAction());
     addAction(mConsoleDock->toggleViewAction());
     addAction(mIssuesDock->toggleViewAction());
+    addAction(mAiDock->toggleViewAction());
 
     mMapEditor = new MapEditor;
     mTilesetEditor = new TilesetEditor;
@@ -2191,9 +2197,12 @@ void MainWindow::resetToDefaultLayout()
     mProjectDock->setFloating(false);
     mConsoleDock->setFloating(false);
     mIssuesDock->setFloating(false);
+    mAiDock->setFloating(false);
     addDockWidget(Qt::LeftDockWidgetArea, mProjectDock);
     addDockWidget(Qt::BottomDockWidgetArea, mConsoleDock);
     addDockWidget(Qt::BottomDockWidgetArea, mIssuesDock);
+    addDockWidget(Qt::RightDockWidgetArea, mAiDock);
+    mAiDock->setVisible(false);
     mProjectDock->setVisible(true);
     mConsoleDock->setVisible(false);
     mIssuesDock->setVisible(false);
@@ -2211,6 +2220,7 @@ void MainWindow::updateViewsAndToolbarsMenu()
     mViewsAndToolbarsMenu->addAction(mProjectDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mConsoleDock->toggleViewAction());
     mViewsAndToolbarsMenu->addAction(mIssuesDock->toggleViewAction());
+    mViewsAndToolbarsMenu->addAction(mAiDock->toggleViewAction());
 
     if (Editor *editor = mDocumentManager->currentEditor()) {
         mViewsAndToolbarsMenu->addSeparator();

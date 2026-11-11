@@ -8,7 +8,7 @@ DynamicLibrary {
     Depends { name: "libtiled" }
     Depends { name: "translations" }
     Depends { name: "qtsingleapplication" }
-    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml"]; versionAtLeast: "6.2.0" }
+    Depends { name: "Qt"; submodules: ["core", "widgets", "concurrent", "qml", "network"]; versionAtLeast: "6.2.0" }
     Depends { name: "Qt.svg"; condition: qbs.targetOS.contains("macos") }
     Depends { name: "Qt.openglwidgets"; required: false }
     Depends { name: "Qt.dbus"; condition: qbs.targetOS.contains("linux") && project.dbus; required: false }
@@ -167,6 +167,12 @@ DynamicLibrary {
         "command.h",
         "commandmanager.cpp",
         "commandmanager.h",
+        "aidock.cpp",
+        "aidock.h",
+        "aimapbuilder.cpp",
+        "aimapbuilder.h",
+        "claudeclient.cpp",
+        "claudeclient.h",
         "commandsedit.cpp",
         "commandsedit.h",
         "commandsedit.ui",
