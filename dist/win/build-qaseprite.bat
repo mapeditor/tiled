@@ -10,7 +10,7 @@ if defined MINGW (
     cmake -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
 ) else if defined MSVC_ARM64 (
     rem USE_SOFT_INTRINSICS enables MSVC's SSE2 emulation for ARM64
-    cmake -B build -DCMAKE_BUILD_TYPE=Release -A ARM64 -DCMAKE_CXX_FLAGS=-DUSE_SOFT_INTRINSICS -DCMAKE_C_FLAGS=-DUSE_SOFT_INTRINSICS
+    cmake -B build -DCMAKE_BUILD_TYPE=Release -A ARM64 -DCMAKE_TOOLCHAIN_FILE="%QTDIR%\lib\cmake\Qt6\qt.toolchain.cmake" -DQT_HOST_PATH="%QT_HOST_PATH%" -DCMAKE_CXX_FLAGS=-DUSE_SOFT_INTRINSICS -DCMAKE_C_FLAGS=-DUSE_SOFT_INTRINSICS
 ) else (
     cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022"
 )

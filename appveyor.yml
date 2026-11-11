@@ -7,7 +7,7 @@ cache:
   - C:\ProgramData\chocolatey\bin -> appveyor.yml
   - C:\ProgramData\chocolatey\lib -> appveyor.yml
   - C:\Qt\6.11.2\msvc2022_64 -> appveyor.yml
-  - C:\Qt\6.11.2\msvc2022_arm64_cross_compiled -> appveyor.yml
+  - C:\Qt\6.11.2\msvc2022_arm64 -> appveyor.yml
   - C:\Qt\6.11.2\mingw_64 -> appveyor.yml
   - C:\Qt\Tools\mingw1310_64 -> appveyor.yml
   - C:\ccache
@@ -26,12 +26,14 @@ environment:
       PUSH_RELEASE: false
       ENABLE_ZSTD: false
       CCACHE_DIR: C:\ccache\msvc
-    # Cross-compiled ARM64 build: the Qt package contains x64 host tools
-    # and ARM64 target libraries, used with the Hostx64\ARM64 MSVC tools
+    # Cross-compiled ARM64 build using separate x64 Qt host tools
+    # and the Hostx64\ARM64 MSVC compiler
     - QT_VERSION: 6.11.2
       QT_ARCH: win64_msvc2022_arm64_cross_compiled
       QT_MODULES: qtimageformats qtshadertools
-      QTDIR: C:\Qt\6.11.2\msvc2022_arm64_cross_compiled
+      QTDIR: C:\Qt\6.11.2\msvc2022_arm64
+      QT_HOST_PATH: C:\Qt\6.11.2\msvc2022_64
+      DEFAULT_PROFILE: MSVC2022-x64_arm64
       MSVC_ARM64: true
       FILE_SUFFIX: Windows-11+_arm64
       PUSH_RELEASE: false
@@ -61,8 +63,8 @@ install:
   # aqtinstall 3.3.0 does not yet support the changed repository layout of
   # Qt 6.11 on Windows
   - python -m pip install git+https://github.com/miurahr/aqtinstall.git@9e49c82edc6d946db376dec907cca5b4b486eec5
+  - if defined MSVC_ARM64 if not exist %QT_HOST_PATH%\bin\qmake.exe aqt install-qt -O C:\Qt windows desktop %QT_VERSION% win64_msvc2022_64 -m %QT_MODULES%
   - if not exist %QTDIR%\bin\qmake.exe if "%QT_MODULES%"=="" (aqt install-qt -O C:\Qt windows desktop %QT_VERSION% %QT_ARCH%) else (aqt install-qt -O C:\Qt windows desktop %QT_VERSION% %QT_ARCH% -m %QT_MODULES%)
-  - if defined MSVC_ARM64 for /d %%d in ("C:\Qt\%QT_VERSION%\*arm64*") do set QTDIR=%%d
   - if defined MINGW if not exist %MINGW%\bin\%CC% aqt install-tool -O C:\Qt windows desktop %MINGW_COMPONENT% %MINGW_VARIANT%
   - set PATH=%QTDIR%\bin;%MINGW%\bin;%PATH%
 
@@ -72,7 +74,8 @@ before_build:
   - if defined MINGW qbs config defaultProfile mingw
   - if defined DEFAULT_PROFILE qbs setup-toolchains --detect
   - if defined DEFAULT_PROFILE qbs config defaultProfile %DEFAULT_PROFILE%
-  - if defined MSVC_ARM64 call dist\win\setup-arm64-toolchain.bat
+  # Query the target Qt configuration using the x64 qmake wrapper.
+  - if defined MSVC_ARM64 qbs config profiles.%DEFAULT_PROFILE%.moduleProviders.Qt.qmakeFilePaths "%QTDIR%\bin\host-qmake.bat"
 
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i

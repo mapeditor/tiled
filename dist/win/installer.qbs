@@ -36,7 +36,7 @@ WindowsInstallerPackage {
         var defs = [
             "Version=" + version,
             "InstallRoot=" + qbs.installRoot,
-            "QtDir=" + FileInfo.joinPaths(Qt.core.binPath, ".."),
+            "QtDir=" + FileInfo.joinPaths(Qt.core.installPath, ".."),
             "QtVersionMajor=" + Qt.core.versionMajor,
             "QtVersionMinor=" + Qt.core.versionMinor,
             "RootDir=" + project.sourceDirectory,

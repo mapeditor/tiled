@@ -38,7 +38,7 @@ Product {
         name: "Qt DLLs"
         prefix: {
             if (qbs.targetOS.contains("windows")) {
-                return Qt.core.binPath + "/"
+                return Qt.core.installPath + "/"
             } else {
                 return Qt.core.libPath + "/lib"
             }
@@ -211,7 +211,7 @@ Product {
         name: "Qt Translations"
         prefix: {
             if (qbs.targetOS.contains("windows")) {
-                return FileInfo.joinPaths(Qt.core.binPath, "../translations/")
+                return Qt.core.translationsPath + "/"
             } else if (qbs.targetOS.contains("linux")) {
                 return FileInfo.joinPaths(Qt.core.libPath, "../translations/")
             }
