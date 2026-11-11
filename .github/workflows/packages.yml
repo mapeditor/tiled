@@ -345,23 +345,34 @@ jobs:
         path: Tiled-${{ needs.version.outputs.version }}_macOS-${{ matrix.version_suffix }}.zip
 
   windows:
-    name: Windows (${{ matrix.arch }}-bit, Qt ${{ matrix.qt_version_major }})
-    runs-on: windows-latest
+    name: Windows (${{ matrix.label }}, Qt ${{ matrix.qt_version_major }})
+    runs-on: ${{ matrix.runs_on }}
     needs: version
 
     strategy:
+      fail-fast: false
       matrix:
         include:
         - qt_version: 6.11.2
           qt_version_major: 6
+          qt_host: windows
           qt_arch: win64_mingw
           qt_modules: "qtimageformats qtshadertools"
-          arch: 64
-          openssl_arch: x64
+          qt_tools: "tools_mingw1310,qt.tools.win64_mingw1310"
+          toolchain: mingw
+          label: 64-bit MinGW
+          runs_on: windows-latest
           filename_suffix: 'Windows-10+_x86_64'
-          mingw_component: tools_mingw1310
-          mingw_variant: qt.tools.win64_mingw1310
           mingw_dir: mingw1310_64
+        - qt_version: 6.11.2
+          qt_version_major: 6
+          qt_host: windows_arm64
+          qt_arch: win64_msvc2022_arm64
+          qt_modules: "qtimageformats qtshadertools"
+          toolchain: msvc
+          label: ARM64 MSVC
+          runs_on: windows-11-arm
+          filename_suffix: 'Windows-11+_arm64'
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
@@ -385,16 +396,21 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         version: ${{ matrix.qt_version }}
+        host: ${{ matrix.qt_host }}
         arch: ${{ matrix.qt_arch }}
         modules: ${{ matrix.qt_modules }}
-        tools: "${{ matrix.mingw_component }},${{ matrix.mingw_variant }}"
+        tools: ${{ matrix.qt_tools }}
         # aqtinstall 3.3.0 does not yet support the changed repository
         # layout of Qt 6.11 on Windows
         aqtsource: 'git+https://github.com/miurahr/aqtinstall.git@9e49c82edc6d946db376dec907cca5b4b486eec5'
         setup-python: false
         cache: true
 
+    # The ARM64 runner only has Visual Studio 18, which requires the CMake
+    # version bundled with the image. The pinned version is kept for the
+    # MinGW job.
     - name: Setup CMake
+      if: matrix.toolchain == 'mingw'
       uses: jwlawson/actions-setup-cmake@v2
       with:
         cmake-version: '${{ env.CMAKE_VERSION }}'
@@ -404,7 +420,12 @@ jobs:
         curl -fLO https://download.qt.io/official_releases/qbs/${{ env.QBS_VERSION }}/qbs.${{ env.QBS_VERSION }}.nupkg
         choco install -y qbs --version ${{ env.QBS_VERSION }} --source .
 
-    - name: Setup Qbs
+    - name: Install WiX Toolset
+      if: matrix.toolchain == 'msvc'
+      run: choco install -y wixtoolset --no-progress
+
+    - name: Setup Qbs (MinGW)
+      if: matrix.toolchain == 'mingw'
       run: |
         export IQTA_TOOLS="${IQTA_TOOLS//D:/\/d}"
         export IQTA_TOOLS="${IQTA_TOOLS//\\/\/}"
@@ -417,12 +438,30 @@ jobs:
         # reports to their debug symbols on Sentry
         qbs config profiles.qt.cpp.linkerFlags '["--build-id"]'
 
+    - name: Setup Qbs (MSVC)
+      if: matrix.toolchain == 'msvc'
+      run: |
+        if ! command -v vswhere &> /dev/null; then
+          vswhere() { "/c/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe" "$@"; }
+        fi
+        # Prefer the native ARM64 toolchain, fall back to the x64 cross tools
+        CL=$(vswhere -latest -find 'VC\Tools\MSVC\*\bin\HostARM64\ARM64\cl.exe' | sort -r | head -n1)
+        if [ -z "$CL" ]; then
+          CL=$(vswhere -latest -find 'VC\Tools\MSVC\*\bin\Hostx64\ARM64\cl.exe' | sort -r | head -n1)
+        fi
+        echo "ARM64 compiler: $CL"
+        qbs setup-toolchains "${CL//\\//}" msvc
+        qbs setup-qt "${QT_ROOT_DIR//\\//}/bin/qmake.exe" qt
+        qbs config profiles.qt.baseProfile msvc
+        qbs config defaultProfile qt
+
     - name: Setup ccache
       uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: ccache-windows-${{ matrix.filename_suffix }}
 
-    - name: Build Sentry Native
+    - name: Build Sentry Native (MinGW)
+      if: matrix.toolchain == 'mingw'
       run: |
         # uasm is needed to assemble crashpad's .asm files with MinGW
         /c/msys64/usr/bin/pacman -S --noconfirm mingw-w64-x86_64-uasm
@@ -438,12 +477,33 @@ jobs:
         cmake --install build --prefix install --config RelWithDebInfo
         popd
 
-    - name: Build Zstandard
+    - name: Build Sentry Native (MSVC)
+      if: matrix.toolchain == 'msvc'
+      run: |
+        curl -sLO https://github.com/getsentry/sentry-native/releases/download/${SENTRY_VERSION}/sentry-native.zip
+        mkdir sentry-native
+        pushd sentry-native
+        unzip -q ../sentry-native.zip
+        cmake -B build -A ARM64 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DSENTRY_BUILD_TESTS=OFF -DSENTRY_BUILD_EXAMPLES=OFF
+        cmake --build build --parallel --config RelWithDebInfo
+        cmake --install build --prefix install --config RelWithDebInfo
+        popd
+
+    - name: Build Zstandard (MinGW)
+      if: matrix.toolchain == 'mingw'
       run: |
         git clone --depth 1 -b release https://github.com/facebook/zstd.git
         pushd zstd/lib
         CC=gcc mingw32-make -j2 libzstd.a
         popd
+
+    - name: Build Zstandard (MSVC)
+      if: matrix.toolchain == 'msvc'
+      run: |
+        git clone --depth 1 -b release https://github.com/facebook/zstd.git
+        cmake -S zstd/build/cmake -B zstd/build/cmake/build -A ARM64 -DBUILD_SHARED_LIBS=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_TESTS=OFF
+        cmake --build zstd/build/cmake/build --config Release
+        cp zstd/build/cmake/build/lib/Release/zstd_static.lib zstd/lib/zstd.lib
 
     - name: Install qaseprite plugin
       working-directory: qaseprite
@@ -452,7 +512,14 @@ jobs:
         pushd aseprite/laf
         patch -p1 < ../../laf-msvc-dynamic-runtime.patch
         popd
-        cmake -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
+        if [ "${{ matrix.toolchain }}" = "msvc" ]; then
+          # USE_SOFT_INTRINSICS enables MSVC's SSE2 emulation for ARM64
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -A ARM64 \
+            -DCMAKE_CXX_FLAGS="-DUSE_SOFT_INTRINSICS" \
+            -DCMAKE_C_FLAGS="-DUSE_SOFT_INTRINSICS"
+        else
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -G "MinGW Makefiles"
+        fi
         cmake --build build --config Release
         cmake --install build --config Release
 
@@ -460,18 +527,22 @@ jobs:
     - name: Build Tiled
       run: |
         export TILED_MSI_VERSION=1.4.${GITHUB_RUN_NUMBER}
+        DEBUG_INFO_FLAGS="modules.cpp.separateDebugInformation:true"
+        if [ "${{ matrix.toolchain }}" = "msvc" ]; then
+          DEBUG_INFO_FLAGS=""
+        fi
         qbs build config:release \
           projects.Tiled.windowsInstaller:true \
           projects.Tiled.staticZstd:true \
           projects.Tiled.sentry:true \
           qbs.debugInformation:true \
-          modules.cpp.separateDebugInformation:true \
-          modules.cpp.compilerWrapper:ccache
+          modules.cpp.compilerWrapper:ccache \
+          $DEBUG_INFO_FLAGS
         mv release/installer*/Tiled-*.msi ./Tiled-${{ needs.version.outputs.version }}_${{ matrix.filename_suffix }}.msi
 
-    - name: Upload symbols and sources to Sentry
+    - name: Upload symbols and sources to Sentry (MinGW)
       id: sentry-upload
-      if: github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      if: matrix.toolchain == 'mingw' && github.repository == 'mapeditor/tiled' && github.event_name == 'push'
       continue-on-error: ${{ !startsWith(github.ref, 'refs/tags/v') }}
       env:
         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -492,8 +563,22 @@ jobs:
         done
         sentry-cli debug-files upload --include-sources release sentry-native/install/bin syms
 
+    - name: Upload symbols and sources to Sentry (MSVC)
+      id: sentry-upload-msvc
+      if: matrix.toolchain == 'msvc' && github.repository == 'mapeditor/tiled' && github.event_name == 'push'
+      continue-on-error: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      run: |
+        # sentry-cli has no native Windows ARM64 build; the x64 binary works
+        # under emulation. It reads the PDB files directly.
+        VERSION=$(curl -s https://api.github.com/repos/getsentry/sentry-cli/releases/latest | jq -r .tag_name)
+        curl -sLo sentry-cli.exe "https://downloads.sentry-cdn.com/sentry-cli/${VERSION}/sentry-cli-Windows-x86_64.exe"
+        chmod +x sentry-cli.exe
+        ./sentry-cli.exe debug-files upload --include-sources release sentry-native/install
+
     - name: Warn about failed symbol upload
-      if: steps.sentry-upload.outcome == 'failure'
+      if: steps.sentry-upload.outcome == 'failure' || steps.sentry-upload-msvc.outcome == 'failure'
       run: echo "::warning::Sentry symbol upload failed, crash reports for this build will lack symbols"
 
     - name: Upload Tiled installer
@@ -530,6 +615,7 @@ jobs:
         prerelease: false
         files: |
           Tiled-${{ needs.version.outputs.version }}_Windows-10+_x86_64.msi/*.msi
+          Tiled-${{ needs.version.outputs.version }}_Windows-11+_arm64.msi/*.msi
           Tiled-${{ needs.version.outputs.version }}_Linux_x86_64.AppImage/*.AppImage
           Tiled-${{ needs.version.outputs.version }}_macOS-10.14-12.app/*.zip
           Tiled-${{ needs.version.outputs.version }}_macOS-13+.app/*.zip

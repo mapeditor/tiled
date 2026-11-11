@@ -117,11 +117,18 @@ TiledQtGuiApplication {
         name: "Sentry (Windows)"
         condition: project.sentry && qbs.targetOS.contains("windows")
         prefix: "../../sentry-native/install/bin/"
-        files: [
-            "crashpad_handler.exe",
-            "crashpad_wer.dll",
-            "libsentry.dll",
-        ]
+        files: {
+            var list = [
+                "crashpad_handler.exe",
+                "crashpad_wer.dll",
+            ];
+            // The MSVC build produces "sentry.dll" rather than "libsentry.dll".
+            if (qbs.toolchain.contains("msvc"))
+                list.push("sentry.dll");
+            else
+                list.push("libsentry.dll");
+            return list;
+        }
         qbs.install: true
     }
 

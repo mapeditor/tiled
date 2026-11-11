@@ -25,6 +25,13 @@ WindowsInstallerPackage {
 
     targetName: "Tiled-" + project.version + "_" + qbs.architecture
 
+    MsvcRuntimeProbe {
+        id: vcRuntimeProbe
+        condition: project.windowsInstaller && qbs.toolchain.contains("msvc")
+        toolchainInstallPath: cpp.toolchainInstallPath
+        architecture: qbs.architecture
+    }
+
     wix.defines: {
         var defs = [
             "Version=" + version,
@@ -32,17 +39,19 @@ WindowsInstallerPackage {
             "QtDir=" + FileInfo.joinPaths(Qt.core.binPath, ".."),
             "QtVersionMajor=" + Qt.core.versionMajor,
             "QtVersionMinor=" + Qt.core.versionMinor,
-            "RootDir=" + project.sourceDirectory
+            "RootDir=" + project.sourceDirectory,
+            "InstallerVersion=" + (qbs.architecture === "arm64" ? "500" : "200")
         ];
 
         if (qbs.toolchain.contains("mingw"))
             defs.push("MingwDir=" + FileInfo.joinPaths(cpp.toolchainInstallPath, ".."));
-        else if (qbs.toolchain.contains("msvc")) {
-            if (cpp.compilerVersionMajor >= 19) {
-                defs.push("VcUniversalCRT=true");
-                defs.push("VcInstallDir=" + cpp.toolchainInstallPath);
-            } else {
-                defs.push("VcInstallDir=" + FileInfo.joinPaths(cpp.toolchainInstallPath, "../.."));
+        else if (qbs.toolchain.contains("msvc") && vcRuntimeProbe.found) {
+            var files = vcRuntimeProbe.files;
+            for (var i = 0; i < files.length; ++i) {
+                var name = files[i].replace(/\.dll$/i, "")
+                                   .replace(/[^A-Za-z0-9_]/g, "_");
+                defs.push("VcRuntime_" + name + "="
+                          + FileInfo.joinPaths(vcRuntimeProbe.crtDir, files[i]));
             }
         }
 
@@ -51,8 +60,11 @@ WindowsInstallerPackage {
         else
             defs.push("WindowsStylePlugin=qwindowsvistastyle.dll")
 
-        if (project.sentry)
+        if (project.sentry) {
             defs.push("Sentry");
+            defs.push("SentryDll=" + (qbs.toolchain.contains("msvc")
+                                     ? "sentry.dll" : "libsentry.dll"));
+        }
 
         var pythonHome = Environment.getEnv("PYTHONHOME");
         if (pythonHome && File.exists(pythonHome))
