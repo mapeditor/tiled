@@ -32,7 +32,7 @@ Probe {
 
         // Preferred: <VC>/Redist/MSVC/<ver>/<arch>/Microsoft.VC<ver>.CRT
         var msvcDir = FileInfo.joinPaths(toolchainInstallPath, "..", "..", "..");
-        var redistBase = FileInfo.joinPaths(msvcDir, "..", "..", "Redist", "MSVC");
+        var redistBase = FileInfo.joinPaths(msvcDir, "..", "..", "..", "Redist", "MSVC");
         if (File.exists(redistBase)) {
             var versions = File.directoryEntries(redistBase, File.Dirs);
             versions.sort().reverse();
@@ -47,8 +47,11 @@ Probe {
             }
         }
 
-        // Fallback: the compiler directory also contains the runtime DLLs
-        dirs.push(toolchainInstallPath);
+        // The compiler DLLs match the host architecture, so only use them
+        // as a fallback when building for that same architecture.
+        var hostDirName = FileInfo.fileName(FileInfo.path(toolchainInstallPath)).toLowerCase();
+        if (hostDirName === "host" + archDirName)
+            dirs.push(toolchainInstallPath);
 
         for (var i = 0; i < dirs.length; ++i) {
             var dlls = File.directoryEntries(dirs[i], File.Files)
