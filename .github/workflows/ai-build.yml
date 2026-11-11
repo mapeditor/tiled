@@ -1,0 +1,128 @@
+name: Build AI Map Generator
+
+on:
+  push:
+    branches:
+      - ai-map-generator
+  workflow_dispatch:
+
+env:
+  QBS_VERSION: 3.2.0
+  QT_VERSION: 6.11.2
+
+jobs:
+  linux:
+    name: Linux
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install qt6-base-dev libqt6svg6 libqt6test6 qt6-l10n-tools qt6-declarative-dev zlib1g-dev libzstd-dev qbs python3-dev
+        sudo update-alternatives --install /usr/bin/qmake qmake /usr/bin/qmake6 100
+
+    - name: Setup qbs
+      run: |
+        qbs setup-toolchains --detect
+        qbs config defaultProfile x86_64-linux-gnu-gcc-14
+
+    - name: Build and install
+      run: |
+        qbs install --install-root install config:release qbs.installPrefix:/usr
+
+    - name: Package
+      run: tar -czf Tiled-AI-Linux-x86_64.tar.gz -C install .
+
+    - uses: actions/upload-artifact@v6
+      with:
+        name: Tiled-AI-Linux
+        path: Tiled-AI-Linux-x86_64.tar.gz
+
+  macos:
+    name: macOS
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Install dependencies
+      run: |
+        brew update
+        brew install qbs qttools
+        echo "$(brew --prefix qbs)/bin" >> "$GITHUB_PATH"
+
+    - name: Setup qbs
+      run: |
+        qbs setup-toolchains --detect
+        qbs config defaultProfile xcode
+
+    - name: Build and package
+      run: |
+        qbs install --install-root install config:release qbs.installPrefix:""
+        macdeployqt install/Tiled.app -verbose=2
+        pushd install
+        ruby ../dist/macos/fixup-install-names.rb
+        ditto -c -k --sequesterRsrc --keepParent Tiled.app ../Tiled-AI-macOS.zip
+        popd
+
+    - uses: actions/upload-artifact@v6
+      with:
+        name: Tiled-AI-macOS
+        path: Tiled-AI-macOS.zip
+
+  windows:
+    name: Windows
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: ${{ env.QT_VERSION }}
+        arch: win64_mingw
+        modules: "qtimageformats qtshadertools"
+        tools: "tools_mingw1310,qt.tools.win64_mingw1310"
+        aqtsource: 'git+https://github.com/miurahr/aqtinstall.git@9e49c82edc6d946db376dec907cca5b4b486eec5'
+        setup-python: false
+        cache: true
+
+    - name: Install Qbs
+      run: |
+        curl -fLO https://download.qt.io/official_releases/qbs/${{ env.QBS_VERSION }}/qbs.${{ env.QBS_VERSION }}.nupkg
+        choco install -y qbs --version ${{ env.QBS_VERSION }} --source .
+
+    - name: Setup Qbs
+      run: |
+        export IQTA_TOOLS="${IQTA_TOOLS//D:/\/d}"
+        export IQTA_TOOLS="${IQTA_TOOLS//\\/\/}"
+        export QT_ROOT_DIR="${QT_ROOT_DIR//D:/\/d}"
+        export QT_ROOT_DIR="${QT_ROOT_DIR//\\/\/}"
+        qbs setup-toolchains ${IQTA_TOOLS}/mingw1310_64/bin/*-w64-mingw32-gcc.exe mingw
+        qbs setup-qt ${QT_ROOT_DIR}/bin/qmake.exe qt
+        qbs config defaultProfile qt
+
+    - name: Build Zstandard
+      run: |
+        git clone --depth 1 -b release https://github.com/facebook/zstd.git
+        pushd zstd/lib
+        CC=gcc mingw32-make -j2 libzstd.a
+        popd
+
+    - name: Build and install
+      run: |
+        qbs install --install-root install config:release projects.Tiled.staticZstd:true
+
+    - name: Deploy Qt libraries
+      run: |
+        export QT_ROOT_DIR="${QT_ROOT_DIR//\\/\/}"
+        "${QT_ROOT_DIR}/bin/windeployqt.exe" install/tiled.exe || "${QT_ROOT_DIR}/bin/windeployqt.exe" install/bin/tiled.exe
+
+    - uses: actions/upload-artifact@v6
+      with:
+        name: Tiled-AI-Windows
+        path: install
