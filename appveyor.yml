@@ -72,12 +72,7 @@ before_build:
   - if defined MINGW qbs config defaultProfile mingw
   - if defined DEFAULT_PROFILE qbs setup-toolchains --detect
   - if defined DEFAULT_PROFILE qbs config defaultProfile %DEFAULT_PROFILE%
-  # Register the x64-hosted ARM64 cross compiler; setup-toolchains --detect
-  # would pick the x64 toolchain instead
-  - if defined MSVC_ARM64 for /f "usebackq delims=" %%i in (`""%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -find VC\Tools\MSVC\*\bin\Hostx64\ARM64\cl.exe"`) do set ARM64_CL=%%i
-  - if defined MSVC_ARM64 if not defined ARM64_CL (echo No ARM64 MSVC toolchain found & exit /b 1)
-  - if defined MSVC_ARM64 qbs setup-toolchains "%ARM64_CL%" msvc-arm64
-  - if defined MSVC_ARM64 qbs config defaultProfile msvc-arm64
+  - if defined MSVC_ARM64 call dist\win\setup-arm64-toolchain.bat
 
 build_script:
   - FOR /F "tokens=*" %%i in ('git describe') do SET COMMITNOW=%%i
