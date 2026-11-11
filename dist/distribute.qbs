@@ -100,7 +100,7 @@ Product {
 
     property var pluginFiles: {
         if (qbs.targetOS.contains("windows")) {
-            if (qbs.debugInformation && qbs.toolchain.contains("msvc"))
+            if (qbs.toolchain.contains("msvc") && qbs.buildVariant === "debug")
                 return ["*d.dll"];
             else
                 return ["*.dll"];
@@ -112,7 +112,7 @@ Product {
 
     property var pluginExcludeFiles: {
         var files = ["*.pdb"];
-        if (!(qbs.toolchain.contains("msvc") && qbs.debugInformation)) {
+        if (!(qbs.toolchain.contains("msvc") && qbs.buildVariant === "debug")) {
             // Exclude debug DLLs.
             //
             // This also excludes the qdirect2d.dll platform plugin, but I'm
@@ -183,7 +183,7 @@ Product {
         prefix: FileInfo.joinPaths(Qt.core.pluginPath, "/tls/")
         files: {
             if (qbs.targetOS.contains("windows")) {
-                if (qbs.debugInformation && qbs.toolchain.contains("msvc"))
+                if (qbs.toolchain.contains("msvc") && qbs.buildVariant === "debug")
                     return ["qschannelbackendd.dll"];
                 else
                     return ["qschannelbackend.dll"];
@@ -271,17 +271,22 @@ Product {
         qbs.installDir: "translations"
     }
 
+    MsvcRuntimeProbe {
+        id: vcRuntimeProbe
+        condition: qbs.targetOS.contains("windows") && qbs.toolchain.contains("msvc")
+        toolchainInstallPath: cpp.toolchainInstallPath
+        architecture: qbs.architecture
+    }
+
     Group {
         name: "Runtime DLLs"
-        condition: qbs.targetOS.contains("windows")
+        condition: qbs.targetOS.contains("windows") &&
+                   (qbs.toolchain.contains("mingw") || vcRuntimeProbe.found)
 
         prefix: {
             if (qbs.toolchain.contains("mingw"))
                 return FileInfo.joinPaths(cpp.toolchainInstallPath) + "/"
-            else if (qbs.architecture === "x86_64")
-                return "C:/windows/system32/"
-            else
-                return "C:/windows/SysWOW64/"
+            return FileInfo.joinPaths(vcRuntimeProbe.crtDir) + "/"
         }
         files: {
             var list = []
@@ -294,8 +299,7 @@ Product {
                 else
                     list.push("libgcc_s_dw2-1.dll")
             } else {
-                list.push("MSVCP120.DLL",
-                          "MSVCR120.DLL")
+                list = vcRuntimeProbe.files
             }
             return list
         }
