@@ -8,7 +8,6 @@ confinement: strict
 
 platforms:
   amd64:
-  arm64:
   s390x:
   ppc64el:
 
