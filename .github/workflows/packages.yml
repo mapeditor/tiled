@@ -168,6 +168,7 @@ jobs:
     needs: version
 
     strategy:
+      fail-fast: false
       matrix:
         include:
         - runs_on: ubuntu-24.04
@@ -186,6 +187,18 @@ jobs:
 
     - name: Install snapcraft
       run: sudo snap install --classic snapcraft
+
+    - name: Install arm64 Qt SDK
+      if: matrix.arch == 'arm64'
+      run: |
+        # KDE no longer publishes the arm64 SDK channel (bugs.kde.org/528483).
+        sudo snap install kde-qt6-core24-sdk --revision=52
+        # An explicit KF6 SDK dependency prevents the KDE extension from adding
+        # the unavailable Qt SDK channel alongside the installed revision.
+        sed -i '/^parts:/a\
+          kde-sdk:\
+            plugin: nil\
+            build-snaps: [kf6-core24-sdk]' snap/snapcraft.yaml
 
     - name: Build snap
       id: build
