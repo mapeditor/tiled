@@ -23,7 +23,6 @@
 #include "addremovelayer.h"
 #include "addremovetileset.h"
 #include "editablemap.h"
-#include "editabletileset.h"
 #include "scriptmanager.h"
 
 #include <QCoreApplication>
@@ -135,12 +134,11 @@ void EditableGroupLayer::insertLayerAt(int index, EditableLayer *editableLayer)
 
         asset()->push(command);
     } else if (!checkReadOnly()) {
-        if (auto map = groupLayer()->map()) {
-            map->addTilesets(tilesets);
+        if (auto editableMap = map()) {
+            editableMap->map()->addTilesets(tilesets);
 
             for (const auto &tileset : tilesets)
-                if (auto editable = EditableTileset::find(tileset.data()))
-                    editable->attach();
+                editableMap->attachTileset(tileset.data());
         }
 
         // ownership moves to the group layer

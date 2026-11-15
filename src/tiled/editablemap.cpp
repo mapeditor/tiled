@@ -273,7 +273,7 @@ bool EditableMap::addTileset(EditableTileset *editableTileset)
         map()->addTileset(tileset);
 
         // ownership moves to the map
-        editableTileset->attach();
+        attachTileset(tileset.data());
     }
 
     return true;
@@ -311,7 +311,8 @@ bool EditableMap::replaceTileset(EditableTileset *oldEditableTileset,
         map()->replaceTileset(oldTileset, newTileset);
 
         // ownership moves to the map
-        newEditableTileset->attach();
+        attachTileset(newTileset.data());
+        mTilesetReferences.remove(oldTileset.data());
     }
 
     return true;
@@ -333,8 +334,10 @@ bool EditableMap::removeTileset(EditableTileset *editableTileset)
 
     if (auto doc = mapDocument())
         push(new RemoveTileset(doc, index));
-    else if (!checkReadOnly())
+    else if (!checkReadOnly()) {
         map()->removeTilesetAt(index);
+        mTilesetReferences.remove(tileset);
+    }
 
     return true;
 }
@@ -738,6 +741,8 @@ void EditableMap::setDocument(Document *document)
         connect(doc, &MapDocument::layerRemoved, this, &EditableMap::detachLayer);
         connect(doc, &MapDocument::tilesetAdded, this,
                 [this] (int, Tileset *tileset) { attachTileset(tileset); });
+        connect(doc, &MapDocument::tilesetRemoved, this,
+                [this] (Tileset *tileset) { mTilesetReferences.remove(tileset); });
 
         connect(doc, &MapDocument::currentLayerChanged, this, &EditableMap::currentLayerChanged);
         connect(doc, &MapDocument::selectedLayersChanged, this, &EditableMap::selectedLayersChanged);
@@ -755,10 +760,13 @@ void EditableMap::documentChanged(const ChangeEvent &change)
             detachLayer(layer);
 
         mRenderer.reset();
+        mTilesetReferences.clear();
         setObject(nullptr);
         break;
     case ChangeEvent::DocumentReloaded:
         setObject(mapDocument()->map());
+        for (const auto &tileset : map()->tilesets())
+            attachTileset(tileset.data());
         break;
     case ChangeEvent::MapChanged:
         if (static_cast<const MapChangeEvent&>(change).property == Map::OrientationProperty)
@@ -778,7 +786,8 @@ void EditableMap::documentChanged(const ChangeEvent &change)
 void EditableMap::attachLayer(Layer *layer)
 {
     if (auto editable = EditableLayer::find(layer))
-        editable->attach(this);
+        if (editable->asset() != this)
+            editable->attach(this);
 
     if (GroupLayer *groupLayer = layer->asGroupLayer()) {
         for (Layer *childLayer : groupLayer->layers())
@@ -804,15 +813,22 @@ void EditableMap::detachLayer(Layer *layer)
 
 void EditableMap::attachTileset(Tileset *tileset)
 {
-    if (auto editable = EditableTileset::find(tileset))
+    if (auto editable = EditableTileset::find(tileset)) {
+        // Keep script-created tilesets alive while this map uses them, without
+        // changing ownership and preventing collection after the map is gone.
+        if (auto engine = qjsEngine(editable))
+            if (QQmlEngine::objectOwnership(editable) == QQmlEngine::JavaScriptOwnership)
+                mTilesetReferences.insert(tileset, engine->newQObject(editable));
         editable->attach();
+    }
 }
 
 void EditableMap::attachMapObjects(const QList<MapObject *> &mapObjects)
 {
     for (MapObject *mapObject : mapObjects) {
         if (auto editable = EditableMapObject::find(mapObject))
-            editable->attach(this);
+            if (editable->asset() != this)
+                editable->attach(this);
     }
 }
 
