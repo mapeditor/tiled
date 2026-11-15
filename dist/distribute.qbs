@@ -273,9 +273,9 @@ Product {
 
     MsvcRuntimeProbe {
         id: vcRuntimeProbe
-        condition: qbs.targetOS.contains("windows") && qbs.toolchain.contains("msvc")
-        toolchainInstallPath: cpp.toolchainInstallPath
-        architecture: qbs.architecture
+        condition: qbs.targetOS.contains("windows") && qbs.toolchain.contains("msvc") &&
+                   (project.snapshot || project.release || project.windowsInstaller || !!project.msvcRedistDir)
+        crtDir: project.msvcRedistDir
     }
 
     Group {

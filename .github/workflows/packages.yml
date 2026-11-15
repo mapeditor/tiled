@@ -438,6 +438,28 @@ jobs:
         # reports to their debug symbols on Sentry
         qbs config profiles.qt.cpp.linkerFlags '["--build-id"]'
 
+    - name: Install MSVC redistributable files
+      if: matrix.toolchain == 'msvc'
+      shell: pwsh
+      run: |
+        $vsInstaller = "${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer"
+        $vsPath = & "$vsInstaller/vswhere.exe" -latest -property installationPath
+        $arguments = 'modify --installPath "{0}" --add Microsoft.VisualStudio.Component.VC.Redist.14.Latest --quiet --norestart --nocache' -f $vsPath
+        $process = Start-Process "$vsInstaller/setup.exe" -ArgumentList $arguments -Wait -PassThru
+        if ($process.ExitCode -notin 0, 3010) {
+          throw "Installing the MSVC redistributable files failed: $($process.ExitCode)"
+        }
+        $vcvars = "$vsPath/VC/Auxiliary/Build/vcvarsall.bat"
+        $redist = (& cmd /d /c "call `"$vcvars`" arm64 >nul && set VCToolsRedistDir") -replace '^VCToolsRedistDir=', ''
+        if ($LASTEXITCODE -ne 0) {
+          throw "Could not determine VCToolsRedistDir"
+        }
+        $crt = @(Get-ChildItem -Path (Join-Path $redist.Trim() 'arm64') -Directory -Filter 'Microsoft.VC*.CRT')
+        if ($crt.Count -ne 1) {
+          throw "Expected one ARM64 CRT directory under $redist"
+        }
+        "TILED_MSVC_REDIST_DIR=$($crt[0].FullName.Replace('\', '/'))" >> $env:GITHUB_ENV
+
     - name: Setup Qbs (MSVC)
       if: matrix.toolchain == 'msvc'
       run: |

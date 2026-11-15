@@ -28,8 +28,7 @@ WindowsInstallerPackage {
     MsvcRuntimeProbe {
         id: vcRuntimeProbe
         condition: project.windowsInstaller && qbs.toolchain.contains("msvc")
-        toolchainInstallPath: cpp.toolchainInstallPath
-        architecture: qbs.architecture
+        crtDir: project.msvcRedistDir
     }
 
     wix.defines: {
