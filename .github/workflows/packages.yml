@@ -85,7 +85,7 @@ jobs:
         cache: true
 
     - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@v1.2.24
+      uses: hendrikmuhs/ccache-action@v1.2.25
       with:
         key: ccache-appimage
         max-size: 250M
@@ -172,8 +172,6 @@ jobs:
         include:
         - runs_on: ubuntu-24.04
           arch: amd64
-        - runs_on: ubuntu-24.04-arm
-          arch: arm64
 
     env:
       TILED_VERSION: ${{ needs.version.outputs.version }}
@@ -253,7 +251,7 @@ jobs:
         cmake-version: '${{ env.CMAKE_VERSION }}'
 
     - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@v1.2.24
+      uses: hendrikmuhs/ccache-action@v1.2.25
       with:
         key: ccache-macos-${{ matrix.version_suffix }}
 
@@ -418,7 +416,7 @@ jobs:
         qbs config profiles.qt.cpp.linkerFlags '["--build-id"]'
 
     - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@v1.2.24
+      uses: hendrikmuhs/ccache-action@v1.2.25
       with:
         key: ccache-windows-${{ matrix.filename_suffix }}
 

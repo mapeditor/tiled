@@ -271,6 +271,16 @@ Flixel
 -  Lithander demonstrated his `Flash TMX parser combined with Flixel
    rendering <http://blog.pixelpracht.net/?p=59>`__
 
+Frostfire Forge
+~~~~~~~~~~~~~~~
+
+-  `Frostfire Forge <https://github.com/Frostfire-Interactive/Frostfire-Forge>`__
+   is a browser-based 2D MMO engine with Tiled JSON map support, available under the PolyForm Noncommercial license.
+-  `Frostfire Worlds for Tiled <https://github.com/Frostfire-Interactive/tiled-frostfire-worlds>`__
+   is a Tiled extension for editing Frostfire Forge ``.world`` maps. It shows
+   the whole world as an overview map, opens any region as a regular map and
+   saves changes back into the world files.
+
 Game Maker
 ~~~~~~~~~~
 
