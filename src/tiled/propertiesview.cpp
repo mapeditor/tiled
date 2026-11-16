@@ -35,6 +35,7 @@
 #include <QGuiApplication>
 #include <QLabel>
 #include <QLineEdit>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMetaProperty>
 #include <QPainter>
@@ -1399,6 +1400,25 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
     });
 
     widgets.label = property->createLabel(level, rowWidget);    // todo: fix level
+
+    if (auto label = qobject_cast<PropertyLabel *>(widgets.label)) {
+        label->setProperty(property);
+    }
+    connect(property, &Property::renameRequested, this, [=]() {
+        bool ok;
+        QString newName = QInputDialog::getText(
+            nullptr,
+            QStringLiteral("Rename Property"),
+            QStringLiteral("Enter new name:"),
+            QLineEdit::Normal,
+            property->name(),
+            &ok
+            );
+
+        if (ok && !newName.isEmpty()) {
+            property->setName(newName);
+        }
+    });
 
     if (displayMode != Property::DisplayMode::Header) {
         if (isLeftToRight())
