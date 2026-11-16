@@ -10,6 +10,7 @@
 * Added support for assigning keyboard shortcuts to the dock view toggles (#4598)
 * Scripting: Added 'tiled.cell' function, 'cell.flags' property and 'TileLayerEdit.setCell' function (#4538)
 * Scripting: Added MapObject.resolvedClassName() (by MatusGuy, #4529)
+* Scripting: Added a script server and --eval, --eval-file and --script-server options, for running scripts in a running Tiled instance from the command-line
 * Scripting: Added Tileset.selectedTilesChanged signal (#4615)
 * Scripting: Fixed world scripting APIs to work without the editor (by Shubham Padkonde, #4584)
 * Scripting: Fixed conversion of object references stored in list properties (#4630)
