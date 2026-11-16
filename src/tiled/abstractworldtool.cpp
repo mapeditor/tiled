@@ -529,8 +529,6 @@ void AbstractWorldTool::removeFromWorld(WorldDocument *worldDocument,
  * Moves the map file to the trash and removes the map from the world.
  *
  * Trashing the file is not something we can undo, so it is confirmed first.
- * Removing the map from the world does go on the undo stack, since that is
- * also what marks the world as modified and gets it saved.
  */
 void AbstractWorldTool::deleteMapFile(WorldDocument *worldDocument,
                                       MapDocument *mapDocument)
@@ -569,11 +567,18 @@ void AbstractWorldTool::deleteMapFile(WorldDocument *worldDocument,
         return;
     }
 
+    // Closing the tab may delete the map document, so stop pointing at it first
+    if (mTargetMap == mapDocument)
+        setTargetMap(nullptr);
+
     // An open tab could still save the map back to the file we just deleted
     if (documentIndex != -1)
         manager->closeDocumentAt(documentIndex);
 
-    removeFromWorld(worldDocument, mapDocument);
+    // Trashing the file can't be undone, so there is no undo command either,
+    // the world is just marked as modified so the removal still gets saved
+    RemoveMapCommand(worldDocument, mapFileName).redo();
+    worldDocument->undoStack()->resetClean();
 }
 
 void AbstractWorldTool::addToWorld(WorldDocument *worldDocument)
