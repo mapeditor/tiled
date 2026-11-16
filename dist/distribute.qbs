@@ -76,6 +76,10 @@ Product {
                     "Qt" + major + "Svg" + postfix,
                     "Qt" + major + "Widgets" + postfix
                 );
+                if (File.exists(prefix + "Qt" + major + "HttpServer" + postfix)) {
+                    list.push("Qt" + major + "HttpServer" + postfix,
+                              "Qt" + major + "WebSockets" + postfix);
+                }
             }
 
             if (qbs.targetOS.contains("linux")) {
@@ -315,6 +319,7 @@ Product {
                 "LICENSE.APACHE",
                 "LICENSE.BSD",
                 "LICENSE.GPL",
+                "LICENSE.GPL3",
             ];
 
             if (qbs.targetOS.contains("windows"))

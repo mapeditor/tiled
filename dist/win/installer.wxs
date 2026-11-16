@@ -89,6 +89,10 @@
             <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Core.dll"/>
             <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Gui.dll"/>
             <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Network.dll"/>
+            <?ifdef McpServer ?>
+            <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)HttpServer.dll"/>
+            <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)WebSockets.dll"/>
+            <?endif ?>
             <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Qml.dll"/>
             <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Svg.dll"/>
             <File Source="$(var.QtDir)\bin\Qt$(var.QtVersionMajor)Widgets.dll"/>
@@ -125,6 +129,7 @@
             <File Name="LICENSE.APACHE.txt" Source="$(var.RootDir)\LICENSE.APACHE"/>
             <File Name="LICENSE.BSD.txt" Source="$(var.RootDir)\LICENSE.BSD"/>
             <File Name="LICENSE.GPL.txt" Source="$(var.RootDir)\LICENSE.GPL"/>
+            <File Name="LICENSE.GPL3.txt" Source="$(var.RootDir)\LICENSE.GPL3"/>
 
             <RegistryKey Root='HKLM' Key='Software\[Manufacturer]\[ProductName]'>
               <RegistryValue Type='string' Name='InstallDir' Value='[INSTALLDIR]'/>

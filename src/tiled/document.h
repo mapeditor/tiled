@@ -21,6 +21,7 @@
 #pragma once
 
 #include "properties.h"
+#include "tilededitor_global.h"
 
 #include <QDateTime>
 #include <QObject>
@@ -97,7 +98,7 @@ public:
     QUndoStack *undoStack() const;
     bool isModified() const;
 
-    EditableAsset *editable();
+    TILED_EDITOR_EXPORT EditableAsset *editable();
     void setEditable(std::unique_ptr<EditableAsset> editable);
 
     Object *currentObject() const { return mCurrentObject; }

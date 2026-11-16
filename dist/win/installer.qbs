@@ -54,6 +54,9 @@ WindowsInstallerPackage {
         if (project.sentry)
             defs.push("Sentry");
 
+        if (File.exists(FileInfo.joinPaths(Qt.core.binPath, "Qt6HttpServer.dll")))
+            defs.push("McpServer");
+
         var pythonHome = Environment.getEnv("PYTHONHOME");
         if (pythonHome && File.exists(pythonHome))
             defs.push("Python");
