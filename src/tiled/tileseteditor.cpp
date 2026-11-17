@@ -317,7 +317,7 @@ void TilesetEditor::addDocument(Document *document)
     connect(view, &TilesetView::wangColorImageSelected, this, &TilesetEditor::setWangColorImage);
     connect(view, &TilesetView::wangIdUsedChanged, mWangDock, &WangDock::onWangIdUsedChanged);
     connect(view, &TilesetView::currentWangIdChanged, mWangDock, &WangDock::onCurrentWangIdChanged);
-
+    connect(view, &TilesetView::statusInfoChanged, mStatusInfoLabel, &QLabel::setText);
     QItemSelectionModel *s = view->selectionModel();
     connect(s, &QItemSelectionModel::selectionChanged, this, &TilesetEditor::selectionChanged);
     connect(s, &QItemSelectionModel::currentChanged, this, &TilesetEditor::currentChanged);

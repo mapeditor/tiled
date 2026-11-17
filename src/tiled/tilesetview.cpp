@@ -307,6 +307,7 @@ TilesetView::TilesetView(QWidget *parent)
     setTabKeyNavigation(false);
     setDropIndicatorShown(true);
     setEditTriggers(QAbstractItemView::NoEditTriggers);
+    setMouseTracking(true);
 
     QHeaderView *hHeader = horizontalHeader();
     QHeaderView *vHeader = verticalHeader();
@@ -600,6 +601,22 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
+    QString statusInfo;
+    if (const auto model = tilesetModel()) {
+        const auto tileset = model->tileset();
+        const auto index = indexAt(event->pos());
+        if (!tileset->isCollection() && tileset->columnCount() > 0) {
+            if (const auto tile = model->tileAt(index)) {
+                const int columns = tileset->columnCount();
+                const int x = tile->id() % columns;
+                const int y = tile->id() / columns;
+
+                statusInfo = QStringLiteral("%1, %2").arg(x).arg(y);
+            }
+        }
+    }
+
+    emit statusInfoChanged(statusInfo);
     if (!mEditWangSet) {
         QTableView::mouseMoveEvent(event);
         return;
@@ -699,6 +716,7 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 
 void TilesetView::leaveEvent(QEvent *event)
 {
+    emit statusInfoChanged(QString());
     if (mHoveredIndex.isValid()) {
         const QModelIndex previousHoveredIndex = mHoveredIndex;
         mHoveredIndex = QModelIndex();
