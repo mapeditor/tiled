@@ -1108,6 +1108,9 @@ declare class ObjectGroup extends Layer {
 
 /**
  * A type alias used to describe the possible values in object properties.
+ *
+ * List properties are exposed as plain JavaScript arrays and can contain
+ * nested arrays.
  */
 type TiledObjectPropertyValue =
   | number
@@ -1118,6 +1121,7 @@ type TiledObjectPropertyValue =
   | FilePath
   | MapObject
   | PropertyValue
+  | TiledObjectPropertyValue[]
   | undefined;
 
 /**
