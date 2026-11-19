@@ -24,6 +24,8 @@
 #include "tilesetformat.h"
 
 #include <QJSValue>
+#include <QQmlParserStatus>
+#include <QtQml/qqmlregistration.h>
 
 namespace Tiled {
 
@@ -32,7 +34,10 @@ class EditableAsset;
 class ScriptedFileFormat
 {
 public:
+    ScriptedFileFormat() = default;
     explicit ScriptedFileFormat(const QJSValue &object);
+
+    void setObject(const QJSValue &object) { mObject = object; }
 
     FileFormat::Capabilities capabilities() const;
     QString nameFilter() const;
@@ -50,15 +55,38 @@ private:
     QJSValue mObject;
 };
 
-class ScriptedMapFormat final : public MapFormat
+/**
+ * A map format registered by an extension, either through
+ * tiled.registerMapFormat or declared as a QML component. The 'read',
+ * 'write' and 'outputFiles' functions are looked up on the script object,
+ * which for QML declared formats is the format object itself.
+ */
+class ScriptedMapFormat : public MapFormat, public QQmlParserStatus
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::MapFormat)
+    Q_INTERFACES(Tiled::MapFormat QQmlParserStatus)
+    QML_NAMED_ELEMENT(MapFormat)
+
+    Q_PROPERTY(QString shortName READ shortName WRITE setShortName)
+    Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(QString extension READ extension WRITE setExtension)
 
 public:
+    explicit ScriptedMapFormat(QObject *parent = nullptr);
     ScriptedMapFormat(const QString &shortName, const QJSValue &object,
                       QObject *parent = nullptr);
     ~ScriptedMapFormat() override;
+
+    QString name() const { return mName; }
+    void setName(const QString &name) { mName = name; }
+
+    QString extension() const { return mExtension; }
+    void setExtension(const QString &extension) { mExtension = extension; }
+
+    void setShortName(const QString &shortName) { mShortName = shortName; }
+
+    void classBegin() override {}
+    void componentComplete() override;
 
     // FileFormat interface
     Capabilities capabilities() const override { return mFormat.capabilities(); }
@@ -74,19 +102,43 @@ public:
 
 private:
     QString mShortName;
+    QString mName;
+    QString mExtension;
     QString mError;
     ScriptedFileFormat mFormat;
+    bool mAddedToPluginManager = false;
 };
 
-class ScriptedTilesetFormat final : public TilesetFormat
+/**
+ * A tileset format registered by an extension, either through
+ * tiled.registerTilesetFormat or declared as a QML component.
+ */
+class ScriptedTilesetFormat : public TilesetFormat, public QQmlParserStatus
 {
     Q_OBJECT
-    Q_INTERFACES(Tiled::TilesetFormat)
+    Q_INTERFACES(Tiled::TilesetFormat QQmlParserStatus)
+    QML_NAMED_ELEMENT(TilesetFormat)
+
+    Q_PROPERTY(QString shortName READ shortName WRITE setShortName)
+    Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(QString extension READ extension WRITE setExtension)
 
 public:
+    explicit ScriptedTilesetFormat(QObject *parent = nullptr);
     ScriptedTilesetFormat(const QString &shortName, const QJSValue &object,
                           QObject *parent = nullptr);
     ~ScriptedTilesetFormat() override;
+
+    QString name() const { return mName; }
+    void setName(const QString &name) { mName = name; }
+
+    QString extension() const { return mExtension; }
+    void setExtension(const QString &extension) { mExtension = extension; }
+
+    void setShortName(const QString &shortName) { mShortName = shortName; }
+
+    void classBegin() override {}
+    void componentComplete() override;
 
     // FileFormat interface
     Capabilities capabilities() const override { return mFormat.capabilities(); }
@@ -101,8 +153,11 @@ public:
 
 private:
     QString mShortName;
+    QString mName;
+    QString mExtension;
     QString mError;
     ScriptedFileFormat mFormat;
+    bool mAddedToPluginManager = false;
 };
 
 } // namespace Tiled

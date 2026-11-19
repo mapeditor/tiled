@@ -4,7 +4,7 @@
 #include "tmxmapformat.h"
 #include "worldmanager.h"
 
-#include <QJSEngine>
+#include <QQmlEngine>
 #include <QStandardPaths>
 #include <QtTest/QtTest>
 
