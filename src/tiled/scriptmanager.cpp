@@ -252,9 +252,19 @@ void ScriptManager::loadExtensions()
         loadExtension(extensionPath);
 }
 
+static QSet<QString> extensionDirectoryEntries(const QString &path)
+{
+    QSet<QString> entries;
+    const auto files = QDir(path).entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::NoSort);
+    for (const QFileInfo &file : files)
+        entries.insert(file.isDir() ? file.fileName() + QLatin1Char('/') : file.fileName());
+    return entries;
+}
+
 void ScriptManager::loadExtension(const QString &path)
 {
     mWatcher.addPath(path);
+    mExtensionDirectoryEntries.insert(path, extensionDirectoryEntries(path));
 
     const QStringList nameFilters = {
         QLatin1String("*.js"),
@@ -327,6 +337,7 @@ void ScriptManager::reset()
     Tiled::INFO(tr("Resetting script engine"));
 
     mWatcher.clear();
+    mExtensionDirectoryEntries.clear();
 
     // Delete the module before the engine, since destructors of registered
     // objects may touch QJSValue members that need a live engine.
@@ -405,8 +416,17 @@ void ScriptManager::onScriptWarnings(const QList<QQmlError> &warnings)
 
 void ScriptManager::scriptFilesChanged(const QStringList &scriptFiles)
 {
-    Tiled::INFO(tr("Script files changed: %1").arg(scriptFiles.join(QLatin1String(", "))));
-    reset();
+    for (const QString &path : scriptFiles) {
+        // Qt on macOS can report a directory change just because it contains a hidden file.
+        const auto it = mExtensionDirectoryEntries.constFind(path);
+        if (it != mExtensionDirectoryEntries.cend() && QDir(path).exists()
+                && it.value() == extensionDirectoryEntries(path))
+            continue;
+
+        Tiled::INFO(tr("Script files changed: %1").arg(scriptFiles.join(QLatin1String(", "))));
+        reset();
+        return;
+    }
 }
 
 void ScriptManager::refreshExtensionsPaths()
