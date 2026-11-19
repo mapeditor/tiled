@@ -417,7 +417,6 @@ void test_Properties::loadCircularReference()
 
     types.loadFromJson(doc.array(), QString());
 
-    // Verify the back reference is not present
     const auto a = types.findPropertyValueType(QStringLiteral("A"));
     QVERIFY(a);
     QCOMPARE(a->type, PropertyType::PT_Class);
@@ -428,6 +427,7 @@ void test_Properties::loadCircularReference()
     QVERIFY(b);
     QCOMPARE(b->type, PropertyType::PT_Class);
     const auto &membersB = static_cast<const ClassPropertyType*>(b)->members;
+    // B's back reference to A is removed to break the cycle.
     QVERIFY(!membersB.contains(QStringLiteral("a")));
 }
 
