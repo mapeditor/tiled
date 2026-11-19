@@ -30,10 +30,15 @@
 
 #include "tiled_global.h"
 
+#include <QDateTime>
+#include <QFile>
+#include <QHash>
 #include <QMap>
 #include <QObject>
 #include <QSet>
 #include <QTimer>
+
+#include <tuple>
 
 class QFileSystemWatcher;
 
@@ -42,7 +47,8 @@ namespace Tiled {
 /**
  * A wrapper around QFileSystemWatcher that deals gracefully with files being
  * watched multiple times. It also doesn't start complaining when a file
- * doesn't exist.
+ * doesn't exist, and ignores changes that only affect metadata like extended
+ * attributes.
  *
  * It's meant to be used as drop-in replacement for QFileSystemWatcher.
  *
@@ -79,13 +85,20 @@ signals:
     void pathsChanged(const QStringList &paths);
 
 private:
+    // Entry name -> (last modified, size, permissions), the path itself under an empty name
+    using Snapshot = QMap<QString, std::tuple<QDateTime, qint64, QFile::Permissions>>;
+
     void onFileChanged(const QString &path);
     void onDirectoryChanged(const QString &path);
     void pathsChangedTimeout();
     void clearInternal();
 
+    static Snapshot snapshot(const QString &path);
+    bool updateSnapshot(const QString &path);
+
     QFileSystemWatcher *mWatcher;
     QMap<QString, int> mWatchCount;
+    QHash<QString, Snapshot> mSnapshots;
 
     QSet<QString> mChangedPaths;
     QTimer mChangedPathsTimer;
