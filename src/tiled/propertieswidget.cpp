@@ -55,6 +55,7 @@
 #include <QFileInfo>
 #include <QInputDialog>
 #include <QKeyEvent>
+#include <QList>
 #include <QMenu>
 #include <QPushButton>
 #include <QScopedValueRollback>
@@ -65,7 +66,7 @@
 #include <QVBoxLayout>
 
 #include <algorithm>
-
+#include <utility>
 namespace Tiled {
 
 static SessionOption<QList<bool>> propertiesObjectExpandedStates { "properties.objectExpandedStates" };
@@ -1857,7 +1858,16 @@ public:
         else
             mObjectProperties->addProperty(mPositionProperty);
 
-        if (mapObject()->canRotate())
+        bool hasRotatableObject = mapObject()->canRotate();
+
+        for (MapObject *obj : mapDocument()->selectedObjects()) {
+            if (obj->canRotate()) {
+                hasRotatableObject = true;
+                break;
+            }
+        }
+
+        if (hasRotatableObject)
             mObjectProperties->addProperty(mRotationProperty);
 
         if (mapObject()->isTileObject()) {
@@ -1924,7 +1934,15 @@ private:
     {
         mVisibleProperty->setEnabled(mapDocument()->allowHidingObjects());
         mBoundsProperty->setEnabled(mapObject()->hasDimensions());
-        mRotationProperty->setEnabled(mapObject()->canRotate());
+
+        bool canRotate = mapObject()->canRotate();
+        for (MapObject *obj : mapDocument()->selectedObjects()) {
+            if (obj->canRotate()) {
+                canRotate = true;
+                break;
+            }
+        }
+        mRotationProperty->setEnabled(canRotate);
         mFlippingProperty->setEnabled(mapObject()->isTileObject());
 
         const bool isText = mapObject()->shape() == MapObject::Text;
@@ -1947,10 +1965,29 @@ private:
 
     void changeMapObject(MapObject::Property property, const QVariant &value)
     {
-        QUndoCommand *command = new ChangeMapObject(mapDocument(), mapObject(),
-                                                    property, value);
+        QList<MapObject *> targets;
+        targets.append(mapObject());
 
-        if (mapDocument()->selectedObjects().size() <= 1) {
+        for (MapObject *obj : mapDocument()->selectedObjects()) {
+            if (!targets.contains(obj))
+                targets.append(obj);
+        }
+
+        QList<MapObject *> editableTargets;
+        for (MapObject *obj : std::as_const(targets)) {
+            if (property == MapObject::RotationProperty && !obj->canRotate())
+                continue;
+
+            editableTargets.append(obj);
+        }
+
+        if (editableTargets.isEmpty())
+            return;
+
+        QUndoCommand *command = new ChangeMapObject(
+            mapDocument(), editableTargets.first(), property, value);
+
+        if (editableTargets.size() == 1) {
             push(command);
             return;
         }
@@ -1959,15 +1996,11 @@ private:
         undoStack->beginMacro(command->text());
         undoStack->push(command);
 
-        for (MapObject *obj : mapDocument()->selectedObjects()) {
-            if (obj != mapObject()) {
-                QUndoCommand *cmd = new ChangeMapObject(mapDocument(), obj,
-                                                        property, value);
-                undoStack->push(cmd);
-            }
+        for (int i = 1; i < editableTargets.size(); ++i) {
+            undoStack->push(new ChangeMapObject(
+                mapDocument(), editableTargets.at(i), property, value));
         }
-
-        mDocument->undoStack()->endMacro();
+        undoStack->endMacro();
     }
 
     GroupProperty *mObjectProperties;
@@ -2409,8 +2442,10 @@ void PropertiesWidget::setDocument(Document *document)
     mCustomProperties->setDocument(document);
 
     if (document) {
-        connect(document, &Document::currentObjectChanged,
-                this, &PropertiesWidget::currentObjectChanged);
+        connect(document, &Document::currentObjectsChanged,
+                this, [this] {
+            currentObjectChanged(mDocument->currentObject());
+        });
         connect(document, &Document::editCurrentObject,
                 this, [this] {
             if (mPropertiesObject)
