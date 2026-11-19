@@ -23,10 +23,12 @@
 #include "filesystemwatcher.h"
 #include "tilededitor_global.h"
 
+#include <QHash>
 #include <QJSValue>
 #include <QObject>
 #include <QQmlError>
 #include <QScopedValueRollback>
+#include <QSet>
 #include <QStringList>
 
 class QJSEngine;
@@ -112,6 +114,7 @@ private:
     QJSEngine *mEngine = nullptr;
     ScriptModule *mModule = nullptr;
     FileSystemWatcher mWatcher;
+    QHash<QString, QSet<QString>> mExtensionDirectoryEntries;
     QString mExtensionsPath;
     QStringList mExtensionsPaths;
     int mTempCount = 0;

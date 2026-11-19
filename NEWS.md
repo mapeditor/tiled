@@ -22,6 +22,7 @@
 * Made the action search prefer the action of the active editor (#4598)
 * Linux: Added file associations for .tmj, .tsj, .tiled-project and .world files (by miffe, #4550)
 * Linux: Fixed the window icon on some Wayland compositors (by Balló György, #4567)
+* macOS: Fixed repeated script reloads when an extensions directory contains hidden files (#4629)
 * macOS: Declared UTIs and file associations for all supported Tiled formats (with Jyotish, #4469)
 * snap: Updated to Qt 6
 * Raised the minimum Qt version to 6.2 (drops Qt 5 support)
