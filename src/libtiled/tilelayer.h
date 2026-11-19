@@ -526,11 +526,20 @@ protected:
     TileLayer *initializeClone(TileLayer *clone) const;
 
 private:
+    Chunk *chunkForWriting(int x, int y, const Cell &cell);
+    void setCellUntracked(int x, int y, const Cell &cell);
+
+    struct TilesetUsage
+    {
+        SharedTileset tileset;
+        int count = 0;
+    };
+
     int mWidth;
     int mHeight;
     QHash<QPoint, Chunk> mChunks;
     QRect mBounds;
-    QHash<SharedTileset, int> mUsedTilesets;
+    QHash<Tileset*, TilesetUsage> mUsedTilesets;
 };
 
 inline QPoint TileLayer::iterator::key() const
