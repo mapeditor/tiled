@@ -40,8 +40,6 @@ public:
                        GroupLayer *groupLayer,
                        QObject *parent = nullptr);
 
-    Layer *attach(EditableAsset *asset) override;
-
     int layerCount() const;
     QList<QObject*> layers();
 

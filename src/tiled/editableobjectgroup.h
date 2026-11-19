@@ -51,8 +51,6 @@ public:
                         ObjectGroup *objectGroup,
                         QObject *parent = nullptr);
 
-    Layer *attach(EditableAsset *asset) override;
-
     QList<QObject*> objects();
     int objectCount() const;
 

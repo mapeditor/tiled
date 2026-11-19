@@ -237,13 +237,9 @@ void EditableMap::insertLayerAt(int index, EditableLayer *editableLayer)
 
         push(command);
     } else if (!checkReadOnly()) {
-        map()->addTilesets(tilesets);
-
-        for (const auto &tileset : tilesets)
-            attachTileset(tileset.data());
-
-        // ownership moves to the map
-        map()->insertLayer(index, editableLayer->attach(this));
+        Layer *layer = editableLayer->layer();
+        attachLayerWithTilesets(layer, tilesets);
+        map()->insertLayer(index, layer);
     }
 }
 
@@ -781,6 +777,14 @@ void EditableMap::documentChanged(const ChangeEvent &change)
     default:
         break;
     }
+}
+
+void EditableMap::attachLayerWithTilesets(Layer *layer, const QSet<SharedTileset> &tilesets)
+{
+    map()->addTilesets(tilesets);
+    for (const auto &tileset : tilesets)
+        attachTileset(tileset.data());
+    attachLayer(layer);
 }
 
 void EditableMap::attachLayer(Layer *layer)

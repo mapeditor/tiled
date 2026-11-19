@@ -233,6 +233,7 @@ private:
 
     void documentChanged(const ChangeEvent &change);
 
+    void attachLayerWithTilesets(Layer *layer, const QSet<SharedTileset> &tilesets);
     void attachLayer(Layer *layer);
     void detachLayer(Layer *layer);
     void attachTileset(Tileset *tileset);
