@@ -25,6 +25,8 @@
 #include "regionvaluetype.h"
 #include "scriptimage.h"
 
+#include <QHash>
+
 namespace Tiled {
 
 class MapObject;
@@ -227,10 +229,14 @@ protected:
     void setDocument(Document *document) override;
 
 private:
+    friend class EditableGroupLayer;
+
     void documentChanged(const ChangeEvent &change);
 
+    void attachLayerWithTilesets(Layer *layer, const QSet<SharedTileset> &tilesets);
     void attachLayer(Layer *layer);
     void detachLayer(Layer *layer);
+    void attachTileset(Tileset *tileset);
     void attachMapObjects(const QList<MapObject*> &mapObjects);
     void detachMapObjects(const QList<MapObject*> &mapObjects);
 
@@ -240,6 +246,7 @@ private:
 
     std::unique_ptr<Map> mDetachedMap;
     mutable std::unique_ptr<MapRenderer> mRenderer;
+    QHash<Tileset*, QJSValue> mTilesetReferences;
     bool mReadOnly = false;
 
     EditableSelectedArea *mSelectedArea = nullptr;

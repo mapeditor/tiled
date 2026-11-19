@@ -118,11 +118,13 @@ void EditableGroupLayer::insertLayerAt(int index, EditableLayer *editableLayer)
 
         asset()->push(command);
     } else if (!checkReadOnly()) {
-        if (auto map = groupLayer()->map())
-            map->addTilesets(tilesets);
+        Layer *layer = editableLayer->layer();
+        if (auto editableMap = map())
+            editableMap->attachLayerWithTilesets(layer, tilesets);
+        else
+            editableLayer->attach(nullptr);
 
-        // ownership moves to the group layer
-        groupLayer()->insertLayer(index, editableLayer->attach(asset()));
+        groupLayer()->insertLayer(index, layer);
     }
 }
 
