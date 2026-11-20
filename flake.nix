@@ -17,7 +17,15 @@
             lld         # modules.cpp.linkerVariant:lld
             pkg-config
             qbs         # More recent than shipping with QtCreator
-            qt6.full
+            (qt6.env "qt6-tiled" [
+              libglvnd          # libGLX/libOpenGL for linking
+              qt6.qtdeclarative # qml, quick
+              qt6.qtshadertools
+              qt6.qtsvg
+              qt6.qttools       # lrelease for translations
+              qt6.qtimageformats
+              qt6.qtwayland
+            ])
             qtcreator   # IDE
             zlib
           ];
