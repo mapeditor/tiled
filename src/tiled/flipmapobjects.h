@@ -39,8 +39,8 @@ public:
                    FlipDirection flipDirection,
                    QPointF flipOrigin);
 
-    void undo() override { flip(); }
-    void redo() override { flip(); }
+    void undo() override;
+    void redo() override;
 
 private:
     void flip();

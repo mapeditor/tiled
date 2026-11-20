@@ -85,6 +85,26 @@ ChangeMapObjectCells::ChangeMapObjectCells(Document *document,
     , mDocument(document)
     , mChanges(changes)
 {
+    // Make sure the map can refer to the tilesets of the new cells, which
+    // matters when the tile of a template instance gets overridden.
+    QSet<SharedTileset> tilesets;
+    for (const MapObjectCell &change : changes)
+        if (Tileset *tileset = change.cell.tileset())
+            tilesets.insert(tileset->sharedFromThis());
+
+    addMissingTilesets(document, tilesets, this);
+}
+
+void ChangeMapObjectCells::undo()
+{
+    swap();
+    QUndoCommand::undo(); // undo child commands
+}
+
+void ChangeMapObjectCells::redo()
+{
+    QUndoCommand::redo(); // redo child commands
+    swap();
 }
 
 static QList<MapObject*> objectList(const QVector<MapObjectCell> &changes)
