@@ -21,11 +21,14 @@ InstallPackage {
         ]
     }
 
-    property int bits: {
+    property string bits: {
         if (qbs.architecture === "x86_64")
-            return 64;
+            return "64";
         if (qbs.architecture === "x86")
-            return 32;
+            return "32";
+        if (qbs.architecture === "arm64")
+            return "arm64";
+        return "";
     }
 
     targetName: {

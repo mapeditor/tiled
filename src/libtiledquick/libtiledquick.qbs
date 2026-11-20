@@ -27,6 +27,13 @@ DynamicLibrary {
         cpp.sonamePrefix: "@rpath"
     }
 
+    Properties {
+        // Avoid clashing with the PDB file produced by the tiledquick
+        // application, which would install to the same location
+        condition: qbs.toolchain.contains("msvc")
+        cpp.debugInfoSuffix: ".lib.pdb"
+    }
+
     files: [
         "mapborderitem.cpp",
         "mapborderitem.h",
