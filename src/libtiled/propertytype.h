@@ -71,9 +71,11 @@ public:
     const Type type;
     int id = 0;
     QString name;
+    int usageFlags = 0x001;  // Defaults to PropertyValueType flag for backward compatibility
 
     bool isClass() const { return type == PT_Class; }
     bool isEnum() const { return type == PT_Enum; }
+    bool isPropertyValueType() const { return usageFlags & 0x001; }
 
     virtual ~PropertyType() = default;
 
@@ -152,11 +154,12 @@ public:
 
     QVariantMap members;
     QColor color = Qt::gray;
-    int usageFlags = AnyUsage;
     bool memberValuesResolved = true;
     bool drawFill = true;
 
-    ClassPropertyType(const QString &name) : PropertyType(PT_Class, name) {}
+    ClassPropertyType(const QString &name) : PropertyType(PT_Class, name) {
+        usageFlags = AnyUsage;
+    }
 
     ExportValue toExportValue(const QVariant &value, const ExportContext &) const override;
     QVariant toPropertyValue(const QVariant &value, const ExportContext &) const override;
@@ -170,7 +173,6 @@ public:
     bool canAddMemberOfType(const PropertyType *propertyType, const PropertyTypes &types) const;
     bool canAddMember(const QVariant &value, const PropertyTypes &types) const;
 
-    bool isPropertyValueType() const { return usageFlags & PropertyValueType; }
     bool isClassFor(const Object &object) const;
 
     void setUsageFlags(int flags, bool value);

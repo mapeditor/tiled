@@ -206,6 +206,13 @@ QJsonObject EnumPropertyType::toJson(const ExportContext &context) const
     json.insert(QStringLiteral("storageType"), storageTypeToString(storageType));
     json.insert(QStringLiteral("values"), QJsonArray::fromStringList(values));
     json.insert(QStringLiteral("valuesAsFlags"), valuesAsFlags);
+
+    // Export useAs array for enums (only "property" flag is relevant for enums)
+    QJsonArray useAs;
+    if (usageFlags & ClassPropertyType::PropertyValueType)
+        useAs.append(QLatin1String("property"));
+    json.insert(QStringLiteral("useAs"), useAs);
+
     return json;
 }
 
@@ -216,6 +223,18 @@ void EnumPropertyType::initializeFromJson(const QJsonObject &json)
     for (const auto jsonValue : jsonValues)
         values.append(jsonValue.toString());
     valuesAsFlags = json.value(QStringLiteral("valuesAsFlags")).toBool();
+
+    // Parse useAs array for enums. Defaults to PropertyValueType if missing (backward compatibility).
+    const QJsonValue useAsJson = json.value(QLatin1String("useAs"));
+    if (useAsJson.isArray()) {
+        const QJsonArray useAsArray = useAsJson.toArray();
+        usageFlags = 0;
+        if (useAsArray.contains(QLatin1String("property")))
+            usageFlags |= ClassPropertyType::PropertyValueType;
+    } else {
+        // Backward compatibility: if useAs is not present, default to PropertyValueType
+        usageFlags = ClassPropertyType::PropertyValueType;
+    }
 }
 
 EnumPropertyType::StorageType EnumPropertyType::storageTypeFromString(const QString &string)
