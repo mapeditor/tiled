@@ -220,6 +220,9 @@ private:
     void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
+    void connectDocument(Document *document);
+    bool replaceCurrentMapDocument(MapDocument *mapDocument);
+
     void updateSession() const;
 
     MapDocument *openMapFile(const QString &path);
