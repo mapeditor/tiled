@@ -660,7 +660,11 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             });
         }
     });
-    connect(mUi->actionUnloadAllWorlds,  &QAction::triggered, this, [] {
+    connect(mUi->actionUnloadAllWorlds,  &QAction::triggered, this, [this] {
+        for (auto &worldDocument : WorldManager::instance().worlds())
+            if (!confirmSaveWorld(worldDocument.data()))
+                return;
+
         WorldManager::instance().unloadAllWorlds();
     });
     connect(mUi->menuWorld, &QMenu::aboutToShow, this, [this] {

@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include "mapdocument.h"
 #include "undocommands.h"
 
 #include <QRect>
@@ -66,6 +67,43 @@ public:
 
     void undo() override { addMap(); }
     void redo() override;
+};
+
+/**
+ * Undo command that adds a map without a file to a world.
+ *
+ * The map document is kept loaded by the world document, so the map can
+ * stay unsaved until the user saves it.
+ */
+class AddUnsavedMapCommand : public QUndoCommand
+{
+public:
+    AddUnsavedMapCommand(WorldDocument *worldDocument,
+                         const MapDocumentPtr &mapDocument,
+                         const QRect &rect);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    WorldDocument *mWorldDocument;
+    MapDocumentPtr mMapDocument;
+    QRect mRect;
+};
+
+class RemoveUnsavedMapCommand : public QUndoCommand
+{
+public:
+    RemoveUnsavedMapCommand(WorldDocument *worldDocument,
+                            const MapDocumentPtr &mapDocument);
+
+    void undo() override;
+    void redo() override;
+
+private:
+    WorldDocument *mWorldDocument;
+    MapDocumentPtr mMapDocument;
+    QRect mRect;
 };
 
 class SetMapRectCommand : public QUndoCommand
@@ -116,6 +154,31 @@ private:
  * using SetMapRectCommand, which obsoletes itself when this command changes the
  * value back on undo.
  */
+/**
+ * Undo command that updates the position of an unsaved map in its world.
+ *
+ * Used as part of resizing a map, like SetMapPosInLoadedWorld, except the
+ * rect of an unsaved map is kept by the world document.
+ */
+class SetUnsavedMapPos : public QUndoCommand
+{
+public:
+    SetUnsavedMapPos(MapDocument *mapDocument,
+                     const QPoint &from,
+                     const QPoint &to,
+                     QUndoCommand *parent = nullptr);
+
+    void undo() override { setPos(mFrom); }
+    void redo() override { setPos(mTo); }
+
+private:
+    void setPos(QPoint pos);
+
+    MapDocument *mMapDocument;
+    QPoint mFrom;
+    QPoint mTo;
+};
+
 class SetMapPosInLoadedWorld : public QUndoCommand
 {
 public:

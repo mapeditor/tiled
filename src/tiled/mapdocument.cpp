@@ -465,15 +465,23 @@ void MapDocument::resizeMap(QSize size, QPoint offset, bool removeObjects)
     if (!boundsOffset.isNull()) {
         const QString &mapName = fileName();
 
-        for (const auto &worldDocument : WorldManager::instance().worlds()) {
-            auto world = worldDocument->world();
-            const int mapIdx = world->mapIndex(mapName);
-            if (mapIdx < 0)
-                continue; // also skips maps matched via pattern
+        if (mapName.isEmpty()) {
+            // The rect of an unsaved map is kept by its world document
+            if (auto worldDocument = WorldManager::instance().worldForMap(this)) {
+                const QPoint prevPos = worldDocument->mapRect(this).topLeft();
+                new SetUnsavedMapPos(this, prevPos, prevPos + boundsOffset, command);
+            }
+        } else {
+            for (const auto &worldDocument : WorldManager::instance().worlds()) {
+                auto world = worldDocument->world();
+                const int mapIdx = world->mapIndex(mapName);
+                if (mapIdx < 0)
+                    continue; // also skips maps matched via pattern
 
-            const QPoint prevPos = world->mapRect(mapName).topLeft();
-            const QPoint newPos = prevPos + boundsOffset;
-            new SetMapPosInLoadedWorld(worldDocument->fileName(), mapName, prevPos, newPos, command);
+                const QPoint prevPos = world->mapRect(mapName).topLeft();
+                const QPoint newPos = prevPos + boundsOffset;
+                new SetMapPosInLoadedWorld(worldDocument->fileName(), mapName, prevPos, newPos, command);
+            }
         }
     }
 
