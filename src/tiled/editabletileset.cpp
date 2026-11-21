@@ -228,6 +228,16 @@ QSharedPointer<Document> EditableTileset::createDocument()
     return TilesetDocumentPtr::create(mTileset);
 }
 
+/**
+ * Moves the tile and Wang set editables to C++ ownership. The map retains
+ * the tileset's script wrapper separately while it uses the tileset.
+ */
+void EditableTileset::attach()
+{
+    attachTiles(tileset()->tiles());
+    attachWangSets(tileset()->wangSets());
+}
+
 EditableTileset *EditableTileset::get(Tileset *tileset)
 {
     if (!tileset)
@@ -479,6 +489,14 @@ void EditableTileset::detachTiles(const QList<Tile *> &tiles)
             Q_ASSERT(editable->tileset() == this);
             editable->detach();
         }
+    }
+}
+
+void EditableTileset::attachWangSets(const QList<WangSet *> &wangSets)
+{
+    for (WangSet *wangSet : wangSets) {
+        if (auto editable = EditableWangSet::find(wangSet))
+            editable->attach(this);
     }
 }
 
