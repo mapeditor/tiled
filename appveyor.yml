@@ -54,6 +54,17 @@ install:
   - set PATH=%QTDIR%\bin;%MINGW%\bin;%PATH%
 
 before_build:
+  - ps: |
+      if ($env:DEFAULT_PROFILE) {
+        $vswhere = "${env:ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe"
+        $vsPath = & $vswhere -latest -version '[17.0,18.0)' -property installationPath
+        $vcvars = "$vsPath/VC/Auxiliary/Build/vcvars64.bat"
+        $redist = (& cmd /d /c "call `"$vcvars`" >nul && set VCToolsRedistDir") -replace '^VCToolsRedistDir=', ''
+        if ($LASTEXITCODE -ne 0) { throw "Could not determine VCToolsRedistDir" }
+        $crt = @(Get-ChildItem -Path (Join-Path $redist.Trim() 'x64') -Directory -Filter 'Microsoft.VC*.CRT')
+        if ($crt.Count -ne 1) { throw "Expected one x64 CRT directory under $redist" }
+        Set-AppveyorBuildVariable -Name TILED_MSVC_REDIST_DIR -Value $crt[0].FullName.Replace('\', '/')
+      }
   - qbs --version
   - if defined MINGW qbs setup-toolchains %MINGW%\bin\%CC% mingw
   - if defined MINGW qbs config defaultProfile mingw

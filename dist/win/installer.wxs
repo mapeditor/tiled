@@ -22,10 +22,10 @@
     <?error Platform must be defined ?>
   <?endif?>
 
-  <?if $(var.Platform) = x64 ?>
-    <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
-  <?else ?>
+  <?if $(var.Platform) = x86 ?>
     <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+  <?else ?>
+    <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
   <?endif ?>
 
   <Product Name='$(var.ProductName)' Id="*"
@@ -35,7 +35,7 @@
     <Package Id='*' Keywords='Installer' Description="[ProductName] Installer"
              Comments='Windows Installer Package' Manufacturer='[Manufacturer]'
              Languages='1033' Compressed='yes' SummaryCodepage='1252'
-             InstallScope='perMachine' />
+             InstallerVersion='$(var.InstallerVersion)' InstallScope='perMachine' />
 
     <MajorUpgrade AllowDowngrades="yes" />
 
@@ -103,17 +103,23 @@
               <?endif ?>
               <File Source="$(var.MingwDir)\bin\libstdc++-6.dll"/>
               <File Source="$(var.MingwDir)\bin\libwinpthread-1.dll"/>
-            <?else?>
-              <?ifdef VcUniversalCRT ?>
-                <File Source="$(var.VcInstallDir)\msvcp140.dll"/>
-              <?else?>
-                <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcp120.dll"/>
-                <File Source="$(var.VcInstallDir)\redist\$(var.Platform)\Microsoft.VC120.CRT\msvcr120.dll"/>
-              <?endif?>
             <?endif?>
 
+            <?ifdef VcRuntime_concrt140 ?><File Source="$(var.VcRuntime_concrt140)"/><?endif?>
+            <?ifdef VcRuntime_msvcp140 ?><File Source="$(var.VcRuntime_msvcp140)"/><?endif?>
+            <?ifdef VcRuntime_msvcp140_1 ?><File Source="$(var.VcRuntime_msvcp140_1)"/><?endif?>
+            <?ifdef VcRuntime_msvcp140_2 ?><File Source="$(var.VcRuntime_msvcp140_2)"/><?endif?>
+            <?ifdef VcRuntime_msvcp140_atomic_wait ?><File Source="$(var.VcRuntime_msvcp140_atomic_wait)"/><?endif?>
+            <?ifdef VcRuntime_msvcp140_codecvt_ids ?><File Source="$(var.VcRuntime_msvcp140_codecvt_ids)"/><?endif?>
+            <?ifdef VcRuntime_vcamp140 ?><File Source="$(var.VcRuntime_vcamp140)"/><?endif?>
+            <?ifdef VcRuntime_vccorlib140 ?><File Source="$(var.VcRuntime_vccorlib140)"/><?endif?>
+            <?ifdef VcRuntime_vcomp140 ?><File Source="$(var.VcRuntime_vcomp140)"/><?endif?>
+            <?ifdef VcRuntime_vcruntime140 ?><File Source="$(var.VcRuntime_vcruntime140)"/><?endif?>
+            <?ifdef VcRuntime_vcruntime140_1 ?><File Source="$(var.VcRuntime_vcruntime140_1)"/><?endif?>
+            <?ifdef VcRuntime_vcruntime140_threads ?><File Source="$(var.VcRuntime_vcruntime140_threads)"/><?endif?>
+
             <?ifdef Sentry ?>
-              <File Source="$(var.InstallRoot)\libsentry.dll"/>
+              <File Source="$(var.InstallRoot)\$(var.SentryDll)"/>
               <File Source="$(var.InstallRoot)\crashpad_handler.exe"/>
               <File Source="$(var.InstallRoot)\crashpad_wer.dll"/>
             <?endif?>

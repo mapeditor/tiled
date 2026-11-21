@@ -18,6 +18,7 @@ Project {
     property bool staticZstd: false
     property bool sentry: false
     property bool dbus: true
+    property path msvcRedistDir: Environment.getEnv("TILED_MSVC_REDIST_DIR")
     property string openSslPath: Environment.getEnv("OPENSSL_PATH")
     property string pythonPkgConfigName: "python3-embed"
 
