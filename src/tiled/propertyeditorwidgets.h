@@ -378,6 +378,7 @@ public:
 
 signals:
     void toggled(bool expanded);
+    void doubleClicked();
 
 protected:
     bool event(QEvent *event) override;

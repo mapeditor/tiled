@@ -576,6 +576,7 @@ public:
 
 signals:
     void selectedPropertiesChanged();
+    void propertyNameDoubleClicked(Property *property);
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;

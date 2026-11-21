@@ -1400,6 +1400,12 @@ PropertiesView::PropertyWidgets PropertiesView::createPropertyWidgets(Property *
 
     widgets.label = property->createLabel(level, rowWidget);    // todo: fix level
 
+    if (auto label = qobject_cast<PropertyLabel *>(widgets.label)) {
+        connect(label, &PropertyLabel::doubleClicked, this, [=] {
+            emit propertyNameDoubleClicked(property);
+        });
+    }
+
     if (displayMode != Property::DisplayMode::Header) {
         if (isLeftToRight())
             rowLayout->setContentsMargins(0, halfSpacing, halfSpacing * 2, halfSpacing);

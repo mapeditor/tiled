@@ -919,11 +919,14 @@ bool PropertyLabel::event(QEvent *event)
     }
         [[fallthrough]];
     case QEvent::MouseButtonDblClick:
-        if (m_expandable) {
-            if (static_cast<QMouseEvent *>(event)->button() == Qt::LeftButton) {
+        if (static_cast<QMouseEvent *>(event)->button() == Qt::LeftButton) {
+            if (m_expandable) {
                 setExpanded(!m_expanded);
                 return true;
             }
+            // Double-clicking a property name opens rename for custom properties.
+            emit doubleClicked();
+            return true;
         }
         break;
 
