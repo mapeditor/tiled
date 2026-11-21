@@ -47,7 +47,7 @@ public:
      */
     void setTilesetDocument(TilesetDocument *tilesetDocument);
     TilesetDocument *tilesetDocument() const;
-
+    
     QSize sizeHint() const override;
 
     int sizeHintForColumn(int column) const override;
@@ -106,6 +106,7 @@ signals:
     void wangIdUsedChanged(WangId wangId);
     void currentWangIdChanged(WangId wangId);
     void swapTilesRequested(Tile *tileA, Tile *tileB);
+    void statusInfoChanged(const QString &statusInfo);
 
 protected:
     bool event(QEvent *event) override;
