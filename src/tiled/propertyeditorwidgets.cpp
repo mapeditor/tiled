@@ -1068,6 +1068,11 @@ void PropertyWidget::mousePressEvent(QMouseEvent *event)
     emit mousePressed(event->button(), event->modifiers());
 }
 
+void PropertyWidget::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    event->accept();
+}
+
 } // namespace Tiled
 
 #include "moc_propertyeditorwidgets.cpp"
