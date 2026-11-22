@@ -2384,6 +2384,11 @@ PropertiesWidget::PropertiesWidget(QWidget *parent)
             this, &PropertiesWidget::showContextMenu);
     connect(mPropertiesView, &PropertiesView::selectedPropertiesChanged,
             this, &PropertiesWidget::updateActions);
+    connect(mPropertiesView, &PropertiesView::emptyAreaDoubleClicked,
+            this, [this] {
+        if (mActionAddProperty->isEnabled())
+            mActionAddProperty->trigger();
+    });
 
     retranslateUi();
 }
@@ -2846,6 +2851,8 @@ void PropertiesWidget::paste()
 
 void PropertiesWidget::showAddValueProperty()
 {
+    mCustomProperties->setExpanded(true);
+
     if (!mAddValueProperty) {
         mAddValueProperty = new AddValueProperty(mCustomProperties);
 

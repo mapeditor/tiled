@@ -1091,6 +1091,19 @@ void PropertiesView::mousePressEvent(QMouseEvent *event)
     QScrollArea::mousePressEvent(event);
 }
 
+void PropertiesView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton && event->modifiers() == Qt::NoModifier) {
+        if (widget()) {
+            const QPoint posInWidget = widget()->mapFrom(viewport(), event->pos());
+            if (!widget()->childAt(posInWidget))
+                emit emptyAreaDoubleClicked();
+        }
+    }
+
+    QScrollArea::mouseDoubleClickEvent(event);
+}
+
 void PropertiesView::keyPressEvent(QKeyEvent *event)
 {
     auto property = focusedProperty();

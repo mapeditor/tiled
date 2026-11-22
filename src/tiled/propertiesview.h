@@ -576,11 +576,13 @@ public:
 
 signals:
     void selectedPropertiesChanged();
+    void emptyAreaDoubleClicked();
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
