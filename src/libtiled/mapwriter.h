@@ -64,7 +64,8 @@ public:
      * images and tilesets.
      *
      * Error checking will need to be done on the \a device after calling this
-     * function.
+     * function. In addition, errorString() is non-empty when the map could
+     * not be written correctly.
      */
     void writeMap(const Map *map, QIODevice *device,
                   const QString &path = QString());

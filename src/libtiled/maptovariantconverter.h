@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QVariant>
 
@@ -44,6 +45,8 @@ struct TextData;
  */
 class TILEDSHARED_EXPORT MapToVariantConverter
 {
+    Q_DECLARE_TR_FUNCTIONS(MapToVariantConverter)
+
 public:
     explicit MapToVariantConverter(int version = 2)
         : mVersion(version)
@@ -61,6 +64,12 @@ public:
      */
     QVariant toVariant(const Tileset &tileset, const QDir &directory);
     QVariant toVariant(const ObjectTemplate &objectTemplate, const QDir &directory);
+
+    /**
+     * Returns the error message for the last occurred error, or an empty
+     * string when the last conversion succeeded.
+     */
+    QString errorString() const { return mError; }
 
 private:
     QVariant toVariant(const Tileset &tileset, int firstGid) const;
@@ -90,6 +99,7 @@ private:
     int mVersion;
     QDir mDir;
     GidMapper mGidMapper;
+    mutable QString mError;
 };
 
 } // namespace Tiled
