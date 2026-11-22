@@ -24,6 +24,7 @@
 #include "addremovetileset.h"
 #include "bucketfilltool.h"
 #include "changeselectedarea.h"
+#include "containerhelpers.h"
 #include "createcapsuleobjecttool.h"
 #include "createellipseobjecttool.h"
 #include "createobjecttool.h"
@@ -62,9 +63,11 @@
 #include "stampbrush.h"
 #include "templatesdock.h"
 #include "tile.h"
+#include "tilelayer.h"
 #include "tileselectiontool.h"
 #include "tilesetdock.h"
 #include "tilesetdocument.h"
+#include "tilesetdocumentsmodel.h"
 #include "tilesetformat.h"
 #include "tilesetmanager.h"
 #include "tilestamp.h"
@@ -93,6 +96,7 @@
 #include <QUndoGroup>
 #include <QWindow>
 
+#include <functional>
 #include <memory>
 
 namespace Tiled {
@@ -275,6 +279,16 @@ MapEditor::MapEditor(QObject *parent)
 
     connect(mTemplatesDock, &TemplatesDock::templateTilesetReplaced,
             DocumentManager::instance(), &DocumentManager::templateTilesetReplaced);
+
+    // The tools keep their stamp when switching maps, so listen for removed
+    // tiles in any tileset rather than only in those of the current map
+    auto documentManager = DocumentManager::instance();
+    for (const auto &tilesetDocument : documentManager->tilesetDocumentsModel()->tilesetDocuments())
+        tilesetDocumentAdded(tilesetDocument.data());
+    connect(documentManager, &DocumentManager::tilesetDocumentAdded,
+            this, &MapEditor::tilesetDocumentAdded);
+    connect(documentManager, &DocumentManager::tilesetDocumentRemoved,
+            this, &MapEditor::tilesetDocumentRemoved);
 
     connect(mStampBrush, &StampBrush::stampChanged, this, &MapEditor::setStamp);
     connect(mBucketFillTool, &BucketFillTool::stampChanged, this, &MapEditor::setStamp);
@@ -808,6 +822,108 @@ void MapEditor::setStamp(const TileStamp &stamp)
     mTilesetDock->selectTilesInStamp(stamp);
 
     emit currentBrushChanged();
+}
+
+/**
+ * Returns the given stamp without the cells matching the given condition.
+ * Variations left without any tiles are dropped, as are tilesets no longer
+ * used by a variation. Returns the stamp itself when none of its cells match,
+ * and an empty stamp when no variation that can be picked is left.
+ */
+static TileStamp stampWithoutCells(const TileStamp &stamp,
+                                   const std::function<bool (const Cell &)> &condition)
+{
+    const auto &variations = stamp.variations();
+    const bool matches = contains_where(variations, [&] (const TileStampVariation &variation) {
+        for (const Layer *layer : variation.map->tileLayers())
+            if (static_cast<const TileLayer*>(layer)->hasCell(condition))
+                return true;
+        return false;
+    });
+
+    if (!matches)
+        return stamp;
+
+    TileStamp cleaned;
+    bool canPick = false;
+
+    for (const TileStampVariation &variation : variations) {
+        auto map = variation.map->clone();
+        bool hasTiles = false;
+
+        for (Layer *layer : map->tileLayers()) {
+            auto tileLayer = static_cast<TileLayer*>(layer);
+            tileLayer->erase(tileLayer->region(condition));
+            hasTiles |= !tileLayer->isEmpty();
+        }
+
+        if (!hasTiles)
+            continue;
+
+        const auto usedTilesets = map->usedTilesets();
+        for (int i = map->tilesetCount() - 1; i >= 0; --i)
+            if (!usedTilesets.contains(map->tilesetAt(i)))
+                map->removeTilesetAt(i);
+
+        canPick |= variation.probability > 0;
+        cleaned.addVariation(std::move(map), variation.probability);
+    }
+
+    // Without any variation that can be picked, there is no stamp left to use
+    if (!canPick)
+        return TileStamp();
+
+    return cleaned;
+}
+
+/**
+ * Makes sure the tools no longer refer to the removed tiles, so that they
+ * can't be placed anymore.
+ */
+void MapEditor::tilesRemoved(const QList<Tile*> &tiles)
+{
+    auto isRemovedTile = [&tiles] (const Cell &cell) {
+        return contains_where(tiles, [&cell] (const Tile *tile) {
+            return cell.refersTile(tile);
+        });
+    };
+
+    // The tools usually share one stamp, so clean it only once
+    const TileStamp stamp = mStampBrush->stamp();
+    const TileStamp cleaned = stampWithoutCells(stamp, isRemovedTile);
+
+    auto clean = [&] (const TileStamp &toolStamp) {
+        return toolStamp == stamp ? cleaned : stampWithoutCells(toolStamp, isRemovedTile);
+    };
+
+    if (!(cleaned == stamp))
+        mStampBrush->setStamp(cleaned);
+
+    const TileStamp bucketFillStamp = clean(mBucketFillTool->stamp());
+    if (!(bucketFillStamp == mBucketFillTool->stamp()))
+        mBucketFillTool->setStamp(bucketFillStamp);
+
+    const TileStamp shapeFillStamp = clean(mShapeFillTool->stamp());
+    if (!(shapeFillStamp == mShapeFillTool->stamp()))
+        mShapeFillTool->setStamp(shapeFillStamp);
+
+    if (contains(tiles, mToolManager->tile()))
+        mToolManager->setTile(nullptr);
+
+    if (!(cleaned == stamp))
+        emit currentBrushChanged();
+}
+
+void MapEditor::tilesetDocumentAdded(TilesetDocument *tilesetDocument)
+{
+    connect(tilesetDocument, &TilesetDocument::tilesRemoved,
+            this, &MapEditor::tilesRemoved);
+}
+
+void MapEditor::tilesetDocumentRemoved(TilesetDocument *tilesetDocument)
+{
+    disconnect(tilesetDocument, &TilesetDocument::tilesRemoved,
+               this, &MapEditor::tilesRemoved);
 }
 
 void MapEditor::selectWangBrush()

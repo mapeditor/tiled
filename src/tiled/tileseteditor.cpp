@@ -960,7 +960,7 @@ void TilesetEditor::removeTiles()
 
     mCurrentTilesetDocument->undoStack()->push(new RemoveTiles(mCurrentTilesetDocument, tiles));
 
-    // todo: make sure any current brushes are no longer referring to removed tiles
+    // todo: make sure the stamps in the Tile Stamps view no longer refer to removed tiles
     setCurrentTile(nullptr);
 }
 

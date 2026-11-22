@@ -60,6 +60,7 @@ class TileStamp;
 class TileStampManager;
 class TileStampsDock;
 class TilesetDock;
+class TilesetDocument;
 class ToolManager;
 class TreeViewComboBox;
 class UndoDock;
@@ -152,6 +153,9 @@ private:
     void setWangFill(bool value);
 
     void setStamp(const TileStamp &stamp);
+    void tilesRemoved(const QList<Tile*> &tiles);
+    void tilesetDocumentAdded(TilesetDocument *tilesetDocument);
+    void tilesetDocumentRemoved(TilesetDocument *tilesetDocument);
 
     void selectWangBrush();
 
