@@ -570,7 +570,7 @@ int main(int argc, char *argv[])
                 return 1;
             }
             Preferences::setStartupProject(filePath);
-        } if (fileInfo.suffix() == QLatin1String("tiled-session")) {
+        } else if (fileInfo.suffix() == QLatin1String("tiled-session")) {
             if (!fileInfo.exists()) {
                 qWarning().noquote() << QCoreApplication::translate("Command line", "Session file '%1' not found.").arg(fileName);
                 return 1;
