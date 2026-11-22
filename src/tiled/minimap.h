@@ -25,11 +25,15 @@
 
 #include <QFrame>
 #include <QImage>
+#include <QRegion>
 #include <QTimer>
 
 namespace Tiled {
 
+class ChangeEvent;
 class MapDocument;
+class MapObject;
+class TileLayer;
 
 class MiniMap : public QFrame
 {
@@ -58,6 +62,10 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
+    void undoStackIndexChanged();
+    void documentChanged(const ChangeEvent &change);
+    void regionChanged(const QRegion &region, TileLayer *tileLayer);
+    void markObjectDirty(MapObject *object);
     void redrawTimeout();
 
     MapDocument *mMapDocument;
@@ -68,7 +76,10 @@ private:
     QPoint mDragOffset;
     bool mMouseMoveCursorState;
     bool mRedrawMapImage;
+    bool mNeedsFullRedraw;
+    bool mSawTrackedChange;
     MiniMapRenderer::RenderFlags mRenderFlags;
+    QRegion mDirtyRegion;
 
     QRect viewportRect() const;
     QPointF mapToScene(QPointF p) const;
