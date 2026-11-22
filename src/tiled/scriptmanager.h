@@ -31,7 +31,11 @@
 #include <QSet>
 #include <QStringList>
 
-class QJSEngine;
+#include <memory>
+#include <vector>
+
+class QQmlComponent;
+class QQmlEngine;
 
 namespace Tiled {
 
@@ -70,7 +74,7 @@ public:
     const QString &extensionsPath() const;
 
     ScriptModule *module() const;
-    QJSEngine *engine() const;
+    QQmlEngine *engine() const;
 
     QJSValue evaluate(const QString &program,
                       const QString &fileName = QString(), int lineNumber = 1);
@@ -97,7 +101,7 @@ signals:
 
 private:
     explicit ScriptManager(QObject *parent = nullptr);
-    ~ScriptManager() override = default;
+    ~ScriptManager() override;
 
     void reset();
     void initialize();
@@ -108,11 +112,23 @@ private:
 
     void loadExtensions();
     void loadExtension(const QString &path);
+    void loadQmlExtension(const QString &fileName);
 
     QJSValue evaluateFile(const QString &fileName);
 
-    QJSEngine *mEngine = nullptr;
+    /**
+     * The object tree instantiated for a loaded QML extension file. The root
+     * object is destroyed before the component and both are destroyed before
+     * the engine.
+     */
+    struct QmlExtensionFile {
+        std::unique_ptr<QQmlComponent> component;
+        std::unique_ptr<QObject> rootObject;
+    };
+
+    QQmlEngine *mEngine = nullptr;
     ScriptModule *mModule = nullptr;
+    std::vector<QmlExtensionFile> mQmlExtensions;
     FileSystemWatcher mWatcher;
     QHash<QString, QSet<QString>> mExtensionDirectoryEntries;
     QString mExtensionsPath;
@@ -138,7 +154,7 @@ inline ScriptModule *ScriptManager::module() const
     return mModule;
 }
 
-inline QJSEngine *ScriptManager::engine() const
+inline QQmlEngine *ScriptManager::engine() const
 {
     return mEngine;
 }
