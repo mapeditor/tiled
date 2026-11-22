@@ -251,7 +251,10 @@ Properties propertiesFromJson(const QJsonArray &json, const ExportContext &conte
         exportValue.typeName = propertyObject.value(QLatin1String("type")).toString();
         exportValue.propertyTypeName = propertyObject.value(QLatin1String("propertytype")).toString();
 
-        properties.insert(name, context.toPropertyValue(exportValue));
+        if (name.isEmpty() || name == QLatin1String("type"))
+    continue;
+
+properties.insert(name, context.toPropertyValue(exportValue));
     }
 
     return properties;
