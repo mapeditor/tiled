@@ -1239,19 +1239,34 @@ void TilesetDock::refreshTilesetMenu()
 
     const int currentIndex = mTabBar->currentIndex();
 
-    for (int i = 0; i < mTabBar->count(); ++i) {
-        QAction *action = mTilesetMenu->addAction(mTabBar->tabText(i),
-                                                  [=] { mTabBar->setCurrentIndex(i); });
+    // Limit menu text to 60% of available screen width.
+    const int maxTextWidth =
+            mTilesetMenu->screen()->availableGeometry().width() * 3 / 5;
 
+    const QFontMetrics metrics(mTilesetMenu->font());
+
+    for (int i = 0; i < mTabBar->count(); ++i) {
+        const QString fullName = mTabBar->tabText(i);
+
+        const QString displayName = metrics.elidedText(
+                    fullName, Qt::ElideMiddle, maxTextWidth);
+
+        QAction *action = mTilesetMenu->addAction(
+                    displayName,
+                    [=] { mTabBar->setCurrentIndex(i); });
+
+        action->setToolTip(fullName);
         action->setCheckable(true);
         mTilesetActionGroup->addAction(action);
+
         if (i == currentIndex)
             action->setChecked(true);
     }
 
     mTilesetMenu->addSeparator();
     mTilesetMenu->addAction(mShowTilesetFilter);
-    mTilesetMenu->addAction(ActionManager::action("AddExternalTileset"));
+    mTilesetMenu->addAction(
+                ActionManager::action("AddExternalTileset"));
 }
 
 void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
