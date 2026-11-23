@@ -122,6 +122,171 @@ static void align(QRectF &r, Alignment alignment)
     r.translate(-alignmentOffset(r.size(), alignment));
 }
 
+static QVector<QPair<QPoint, QRectF>> multiTileLayout(const TileLayer *tileLayer,
+                                                      const Cell &repCell,
+                                                      const Map *map,
+                                                      QRectF *outNaturalBounds = nullptr)
+{
+    QSize defaultSize;
+    if (const Tile *tile = repCell.tile())
+        defaultSize = tile->size();
+    else if (Tileset *tileset = repCell.tileset())
+        defaultSize = tileset->tileSize();
+    else if (map)
+        defaultSize = map->tileSize();
+
+    const auto renderer = (map && map->orientation() != Map::Orthogonal)
+            ? MapRenderer::create(map)
+            : nullptr;
+
+    QRectF naturalBounds;
+    QVector<QPair<QPoint, QRectF>> cells;
+
+    for (int y = 0; y < tileLayer->height(); ++y) {
+        for (int x = 0; x < tileLayer->width(); ++x) {
+            const Cell &c = tileLayer->cellAt(x, y);
+            const QSize tSize = (c.tile() && !c.tile()->size().isEmpty()) ? c.tile()->size() : defaultSize;
+            QPointF pos = renderer ? renderer->tileToScreenCoords(x, y)
+                                   : QPointF(qreal(x) * defaultSize.width(), qreal(y) * defaultSize.height());
+            if (map && map->orientation() == Map::Isometric)
+                pos.rx() -= map->tileWidth() / 2.0;
+            pos.ry() += renderer ? map->tileHeight() : defaultSize.height();
+
+            const QRectF r(pos.x(), pos.y() - tSize.height(), tSize.width(), tSize.height());
+            naturalBounds = naturalBounds.isEmpty() ? r : (naturalBounds | r);
+            if (!c.isEmpty())
+                cells.append({ QPoint(x, y), r });
+        }
+    }
+
+    if (renderer) {
+        std::stable_sort(cells.begin(), cells.end(), [](const auto &a, const auto &b) {
+            return a.second.bottom() != b.second.bottom()
+                    ? a.second.bottom() < b.second.bottom()
+                    : a.second.left() < b.second.left();
+        });
+    }
+
+    if (outNaturalBounds)
+        *outNaturalBounds = naturalBounds;
+    return cells;
+}
+
+void MapObject::flipTileLayer(TileLayer *tileLayer,
+                              FlipDirection direction,
+                              const Map *map)
+{
+    if (!tileLayer)
+        return;
+
+    if (map && map->orientation() == Map::Isometric) {
+        const int w = tileLayer->width();
+        const int h = tileLayer->height();
+        TileLayer temp(QString(), 0, 0, h, w);
+        for (int y = 0; y < h; ++y) {
+            for (int x = 0; x < w; ++x) {
+                Cell c = tileLayer->cellAt(x, y);
+                if (c.isEmpty())
+                    continue;
+                if (direction == FlipHorizontally) {
+                    c.setFlippedHorizontally(!c.flippedHorizontally());
+                    temp.setCell(y, x, c);
+                } else {
+                    c.setFlippedVertically(!c.flippedVertically());
+                    temp.setCell(h - 1 - y, w - 1 - x, c);
+                }
+            }
+        }
+        tileLayer->clear();
+        tileLayer->setSize(QSize(h, w));
+        for (int y = 0; y < w; ++y)
+            for (int x = 0; x < h; ++x)
+                if (!temp.cellAt(x, y).isEmpty())
+                    tileLayer->setCell(x, y, temp.cellAt(x, y));
+    } else if (map && map->orientation() == Map::Hexagonal) {
+        tileLayer->flipHexagonal(direction);
+    } else {
+        tileLayer->flip(direction);
+    }
+}
+
+void MapObject::setCell(const Cell &cell)
+{
+    if (mTileLayer && !mCell.isEmpty() && !cell.isEmpty() && mCell.tile() == cell.tile()) {
+        const Map *m = mObjectGroup ? mObjectGroup->map() : nullptr;
+        if (mCell.flippedHorizontally() != cell.flippedHorizontally())
+            flipTileLayer(mTileLayer.data(), FlipHorizontally, m);
+        if (mCell.flippedVertically() != cell.flippedVertically())
+            flipTileLayer(mTileLayer.data(), FlipVertically, m);
+    }
+    mCell = cell;
+}
+
+void MapObject::setTileLayer(const QSharedPointer<TileLayer> &tileLayer)
+{
+    if (!tileLayer) {
+        mTileLayer.clear();
+        return;
+    }
+
+    if (tileLayer->width() == 1 && tileLayer->height() == 1) {
+        mTileLayer.clear();
+        mCell = tileLayer->cellAt(0, 0);
+        return;
+    }
+
+    mTileLayer = tileLayer;
+    for (const Cell &cell : *mTileLayer) {
+        if (!cell.isEmpty()) {
+            mCell = cell;
+            break;
+        }
+    }
+}
+
+QSizeF MapObject::tileObjectSize(const Map *map) const
+{
+    if (isMultiTileObject()) {
+        if (!map && mObjectGroup)
+            map = mObjectGroup->map();
+
+        QRectF naturalBounds;
+        multiTileLayout(mTileLayer.data(), mCell, map, &naturalBounds);
+        if (!naturalBounds.isEmpty())
+            return naturalBounds.size();
+    } else if (const Tile *tile = mCell.tile()) {
+        return tile->size();
+    }
+
+    return mSize;
+}
+
+void MapObject::renderTileObject(CellRenderer &cellRenderer,
+                                 const QRectF &bounds,
+                                 const Map *map) const
+{
+    if (!isMultiTileObject()) {
+        cellRenderer.render(mCell, bounds.topLeft(), bounds.size());
+        return;
+    }
+
+    if (!map && mObjectGroup)
+        map = mObjectGroup->map();
+
+    QRectF naturalBounds;
+    const auto cells = multiTileLayout(mTileLayer.data(), mCell, map, &naturalBounds);
+    const qreal scaleX = naturalBounds.width() > 0 ? bounds.width() / naturalBounds.width() : 1.0;
+    const qreal scaleY = naturalBounds.height() > 0 ? bounds.height() / naturalBounds.height() : 1.0;
+
+    for (const auto &[pos, r] : cells) {
+        const QPointF bottomLeft(bounds.left() + (r.left() - naturalBounds.left()) * scaleX,
+                                 bounds.top() + (r.bottom() - naturalBounds.top()) * scaleY);
+        cellRenderer.render(mTileLayer->cellAt(pos), bottomLeft,
+                            QSizeF(r.width() * scaleX, r.height() * scaleY),
+                            CellRenderer::BottomLeft);
+    }
+}
+
 /**
  * Shortcut to getting a QRectF from position() and size() that uses cell tile
  * if present.
@@ -156,10 +321,10 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
         QPoint tileOffset;
 
         if (const Tile *tile = mCell.tile()) {
-            imgSize = tile->size();
+            imgSize = tileObjectSize(renderer.map());
             tileOffset = tile->offset();
         } else {
-            imgSize = size();
+            imgSize = isMultiTileObject() ? tileObjectSize(renderer.map()) : size();
         }
 
         const QPointF position = renderer.pixelToScreenCoords(mPos);
@@ -204,6 +369,38 @@ QRectF MapObject::screenBounds(const MapRenderer &renderer) const
 
 QPainterPath MapObject::tileObjectShape(const Map *map) const
 {
+    if (isMultiTileObject()) {
+        if (!map && mObjectGroup)
+            map = mObjectGroup->map();
+
+        QPainterPath path;
+        const QRectF bounds(-alignmentOffset(mSize, alignment(map)), mSize);
+        QRectF naturalBounds;
+        const auto cells = multiTileLayout(mTileLayer.data(), mCell, map, &naturalBounds);
+        const qreal scaleX = naturalBounds.width() > 0 ? bounds.width() / naturalBounds.width() : 1.0;
+        const qreal scaleY = naturalBounds.height() > 0 ? bounds.height() / naturalBounds.height() : 1.0;
+
+        for (const auto &[pos, r] : cells) {
+            const Cell &c = mTileLayer->cellAt(pos);
+            const Tile *t = c.tile();
+            if (!t || t->size().isEmpty())
+                continue;
+            const qreal sx = (r.width() * scaleX) / t->width();
+            const qreal sy = (r.height() * scaleY) / t->height();
+            QTransform tr;
+            tr.translate(bounds.left() + (r.left() - naturalBounds.left()) * scaleX + t->offset().x() * sx,
+                         bounds.top() + (r.top() - naturalBounds.top()) * scaleY + t->offset().y() * sy);
+            tr.scale(sx, sy);
+            if (c.flippedHorizontally() || c.flippedVertically()) {
+                tr.translate(t->width() / 2.0, t->height() / 2.0);
+                tr.scale(c.flippedHorizontally() ? -1 : 1, c.flippedVertically() ? -1 : 1);
+                tr.translate(-t->width() / 2.0, -t->height() / 2.0);
+            }
+            path.addPath(tr.map(t->imageShape()));
+        }
+        return path;
+    }
+
     const Tile *tile = mCell.tile();
     const QSize tileSize = tile ? tile->size() : QSize(0, 0);
 
@@ -314,7 +511,13 @@ QVariant MapObject::mapObjectProperty(Property property) const
     case SizeProperty:          return mSize;
     case RotationProperty:      return mRotation;
     case OpacityProperty:       return mOpacity;
-    case CellProperty:          Q_ASSERT(false); break;
+    case CellProperty: {
+        if (isMultiTileObject())
+            return QVariant::fromValue(QSharedPointer<TileLayer>(mTileLayer->clone()));
+        auto layer = QSharedPointer<TileLayer>::create(QString(), 0, 0, 1, 1);
+        layer->setCell(0, 0, mCell);
+        return QVariant::fromValue(layer);
+    }
     case ShapeProperty:         return mShape;
     case TemplateProperty:      Q_ASSERT(false); break;
     case CustomProperties:      Q_ASSERT(false); break;
@@ -337,7 +540,7 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
     case SizeProperty:          setSize(value.toSizeF()); break;
     case RotationProperty:      setRotation(value.toReal()); break;
     case OpacityProperty:       setOpacity(value.toReal()); break;
-    case CellProperty:          Q_ASSERT(false); break;
+    case CellProperty:          setTileLayer(value.value<QSharedPointer<TileLayer>>()); break;
     case ShapeProperty:         setShape(value.value<Shape>()); break;
     case TemplateProperty:      Q_ASSERT(false); break;
     case CustomProperties:      Q_ASSERT(false); break;
@@ -351,7 +554,7 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
  */
 void MapObject::flip(FlipDirection direction, const QPointF &origin)
 {
-    if (!mCell.isEmpty() || shape() == Text) {
+    if (isTileObject() || shape() == Text) {
         flipInScreenCoordinates(direction, origin);
     } else {
         const auto renderer = MapRenderer::create(map());
@@ -376,6 +579,8 @@ MapObject *MapObject::clone() const
     o->setPolygon(mPolygon);
     o->setShape(mShape);
     o->setCell(mCell);
+    if (mTileLayer)
+        o->setTileLayer(QSharedPointer<TileLayer>(mTileLayer->clone()));
     o->setRotation(mRotation);
     o->setOpacity(mOpacity);
     o->setVisible(mVisible);
@@ -392,6 +597,8 @@ void MapObject::copyPropertiesFrom(const MapObject *object)
     setPolygon(object->polygon());
     setShape(object->shape());
     setCell(object->cell());
+    setTileLayer(object->tileLayer() ? QSharedPointer<TileLayer>(object->tileLayer()->clone())
+                                     : QSharedPointer<TileLayer>());
     setRotation(object->rotation());
     setOpacity(object->opacity());
     setVisible(object->isVisible());
@@ -427,8 +634,11 @@ void MapObject::syncWithTemplate()
         setPolygon(base->polygon());
     }
 
-    if (!propertyChanged(MapObject::CellProperty))
+    if (!propertyChanged(MapObject::CellProperty)) {
         setCell(base->cell());
+        setTileLayer(base->tileLayer() ? QSharedPointer<TileLayer>(base->tileLayer()->clone())
+                                       : QSharedPointer<TileLayer>());
+    }
 
     if (!propertyChanged(MapObject::RotationProperty))
         setRotation(base->rotation());
@@ -482,12 +692,16 @@ void MapObject::flipInScreenCoordinates(FlipDirection direction, const QPointF &
 
         if (!mCell.isEmpty())
             mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
+        if (isMultiTileObject())
+            flipTileLayer(mTileLayer.data(), FlipHorizontally, map());
     } else { // direction == FlipVertically
         newTopLeftScreenPos.ry() += 2 * (screenOrigin.y() - topLeftScreenPos.y());
         flippedAlignmentOffset.ry() *= -1;
 
         if (!mCell.isEmpty())
             mCell.setFlippedVertically(!mCell.flippedVertically());
+        if (isMultiTileObject())
+            flipTileLayer(mTileLayer.data(), FlipVertically, map());
     }
 
     rotationTransform.reset();

@@ -26,10 +26,26 @@
 #include "maprenderer.h"
 #include "objectgroup.h"
 #include "snaphelper.h"
+#include "stampbrush.h"
 #include "tile.h"
+#include "tilestamp.h"
+#include "toolmanager.h"
 #include "utils.h"
 
 using namespace Tiled;
+
+static const TileLayer *selectedTileLayer(ToolManager *toolManager)
+{
+    if (StampBrush *stampBrush = toolManager->findTool<StampBrush>()) {
+        const TileStamp &stamp = stampBrush->stamp();
+        if (!stamp.variations().isEmpty()) {
+            const Map *map = stamp.variations().first().map;
+            if (map && map->layerCount() > 0)
+                return map->layerAt(0)->asTileLayer();
+        }
+    }
+    return nullptr;
+}
 
 CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
     : CreateObjectTool("CreateTileObjectTool", parent)
@@ -38,6 +54,7 @@ CreateTileObjectTool::CreateTileObjectTool(QObject *parent)
     icon.addFile(QLatin1String(":images/48/insert-image.png"));
     setIcon(icon);
     setShortcut(Qt::Key_T);
+    setUsesSelectedTiles(true);
     Utils::setThemeIcon(this, "insert-image");
     languageChangedImpl();
 }
@@ -46,20 +63,18 @@ void CreateTileObjectTool::mouseMovedWhileCreatingObject(const QPointF &pos, Qt:
 {
     MapObject *newMapObject = mNewMapObjectItem->mapObject();
 
-    if (state() == Preview && tile() && mCell.tile() != tile()) {
-        setCell(Cell(tile()));
-        mRotation = 0;
-
+    if (state() == Preview && syncSelection()) {
         newMapObject->setCell(mCell);
+        newMapObject->setTileLayer(mTileLayer ? QSharedPointer<TileLayer>(mTileLayer->clone()) : nullptr);
         newMapObject->setRotation(mRotation);
-        newMapObject->setSize(tile()->size());
+        newMapObject->setSize(newMapObject->tileObjectSize(mapDocument()->map()));
         mNewMapObjectItem->update();
         mNewMapObjectItem->syncWithMapObject();
     }
 
     // todo: take into account rotation when positioning the preview
 
-    const QSize imgSize = newMapObject->cell().tile()->size();
+    const QSizeF imgSize = newMapObject->tileObjectSize(mapDocument()->map());
     const QPointF halfSize(imgSize.width() / 2, imgSize.height() / 2);
     const QRectF screenBounds { pos - halfSize, imgSize };
 
@@ -86,27 +101,56 @@ void CreateTileObjectTool::languageChangedImpl()
     setName(tr("Insert Tile"));
 }
 
-MapObject *CreateTileObjectTool::createNewMapObject()
+bool CreateTileObjectTool::syncSelection()
 {
-    if (!tile())
-        return nullptr;
+    const TileLayer *currentLayer = selectedTileLayer(toolManager());
+    if (currentLayer && !currentLayer->isEmpty() && (currentLayer->width() > 1 || currentLayer->height() > 1)) {
+        if (mSourceTileLayer != currentLayer || !mTileLayer) {
+            mSourceTileLayer = currentLayer;
+            mTileLayer = QSharedPointer<TileLayer>(currentLayer->clone());
+            setCell(Cell());
+            mRotation = 0;
+            return true;
+        }
+        return false;
+    }
 
-    if (mCell.tile() != tile()) {
+    if (tile() && (mCell.tile() != tile() || mTileLayer)) {
+        mSourceTileLayer = nullptr;
+        mTileLayer.clear();
         setCell(Cell(tile()));
         mRotation = 0;
+        return true;
     }
+
+    return false;
+}
+
+MapObject *CreateTileObjectTool::createNewMapObject()
+{
+    syncSelection();
+
+    if (!tile() && !mTileLayer)
+        return nullptr;
 
     MapObject *newMapObject = new MapObject;
     newMapObject->setShape(MapObject::Rectangle);
     newMapObject->setCell(mCell);
-    newMapObject->setSize(tile()->size());
+    newMapObject->setTileLayer(mTileLayer ? QSharedPointer<TileLayer>(mTileLayer->clone()) : nullptr);
+    newMapObject->setSize(newMapObject->tileObjectSize(mapDocument()->map()));
     newMapObject->setRotation(mRotation);
     return newMapObject;
 }
 
 void CreateTileObjectTool::flipHorizontally()
 {
-    mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
+    syncSelection();
+
+    const Map *map = mapDocument() ? mapDocument()->map() : nullptr;
+    if (mTileLayer)
+        MapObject::flipTileLayer(mTileLayer.data(), FlipHorizontally, map);
+    else
+        mCell.setFlippedHorizontally(!mCell.flippedHorizontally());
 
     switch (state()) {
     case Idle:
@@ -115,6 +159,11 @@ void CreateTileObjectTool::flipHorizontally()
     case CreatingObject: {
         MapObject *newMapObject = mNewMapObjectItem->mapObject();
         newMapObject->setCell(mCell);
+        if (mTileLayer) {
+            newMapObject->setTileLayer(QSharedPointer<TileLayer>(mTileLayer->clone()));
+            newMapObject->setSize(newMapObject->tileObjectSize(map));
+        }
+        mNewMapObjectItem->syncWithMapObject();
         mNewMapObjectItem->update();
         break;
     }
@@ -123,7 +172,13 @@ void CreateTileObjectTool::flipHorizontally()
 
 void CreateTileObjectTool::flipVertically()
 {
-    mCell.setFlippedVertically(!mCell.flippedVertically());
+    syncSelection();
+
+    const Map *map = mapDocument() ? mapDocument()->map() : nullptr;
+    if (mTileLayer)
+        MapObject::flipTileLayer(mTileLayer.data(), FlipVertically, map);
+    else
+        mCell.setFlippedVertically(!mCell.flippedVertically());
 
     switch (state()) {
     case Idle:
@@ -132,6 +187,11 @@ void CreateTileObjectTool::flipVertically()
     case CreatingObject: {
         MapObject *newMapObject = mNewMapObjectItem->mapObject();
         newMapObject->setCell(mCell);
+        if (mTileLayer) {
+            newMapObject->setTileLayer(QSharedPointer<TileLayer>(mTileLayer->clone()));
+            newMapObject->setSize(newMapObject->tileObjectSize(map));
+        }
+        mNewMapObjectItem->syncWithMapObject();
         mNewMapObjectItem->update();
         break;
     }

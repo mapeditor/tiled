@@ -36,9 +36,13 @@
 #include "objectgroup.h"
 #include "raiselowerhelper.h"
 #include "session.h"
+#include "stampbrush.h"
 #include "templatemanager.h"
 #include "tile.h"
+#include "tilelayer.h"
+#include "tilestamp.h"
 #include "tmxmapformat.h"
+#include "toolmanager.h"
 #include "utils.h"
 
 #include <QFileDialog>
@@ -53,9 +57,22 @@
 
 using namespace Tiled;
 
+static const TileLayer *selectedTileLayer(ToolManager *toolManager)
+{
+    if (StampBrush *stampBrush = toolManager->findTool<StampBrush>()) {
+        const TileStamp &stamp = stampBrush->stamp();
+        if (!stamp.variations().isEmpty()) {
+            const Map *map = stamp.variations().first().map;
+            if (map && map->layerCount() > 0)
+                return map->layerAt(0)->asTileLayer();
+        }
+    }
+    return nullptr;
+}
+
 static bool isTileObject(const MapObject *mapObject)
 {
-    return !mapObject->cell().isEmpty();
+    return mapObject->isTileObject();
 }
 
 static bool isRectangleObject(const MapObject *mapObject)
@@ -70,8 +87,8 @@ static bool isTemplateInstance(const MapObject *mapObject)
 
 static bool isResizedTileObject(const MapObject *mapObject)
 {
-    if (const auto tile = mapObject->cell().tile())
-        return mapObject->size() != tile->size();
+    if (mapObject->isTileObject())
+        return mapObject->size() != mapObject->tileObjectSize();
     return false;
 }
 
@@ -386,7 +403,7 @@ void AbstractObjectTool::resetTileSize()
         commands << new ChangeMapObject(mapDocument(),
                                         mapObject,
                                         MapObject::SizeProperty,
-                                        mapObject->cell().tile()->size());
+                                        mapObject->tileObjectSize());
     }
 
     if (!commands.isEmpty()) {
@@ -546,6 +563,53 @@ void AbstractObjectTool::changeTile()
         if (object->isTileObject())
             tileObjects.append(object);
 
+    if (tileObjects.isEmpty())
+        return;
+
+    const TileLayer *stampLayer = selectedTileLayer(toolManager());
+    const bool isMultiSelection = stampLayer && !stampLayer->isEmpty() &&
+                                  (stampLayer->width() > 1 || stampLayer->height() > 1);
+    const bool anyMultiObject = std::any_of(tileObjects.begin(), tileObjects.end(),
+                                            [](const MapObject *o) { return o->isMultiTileObject(); });
+
+    if (isMultiSelection || anyMultiObject) {
+        QSharedPointer<TileLayer> newLayer;
+        if (isMultiSelection) {
+            newLayer = QSharedPointer<TileLayer>(stampLayer->clone());
+        } else if (tile()) {
+            newLayer = QSharedPointer<TileLayer>::create(QString(), 0, 0, 1, 1);
+            newLayer->setCell(0, 0, Cell(tile()));
+        }
+        if (!newLayer)
+            return;
+
+        QUndoStack *undoStack = currentMapDocument->undoStack();
+        undoStack->beginMacro(QCoreApplication::translate("Undo Commands",
+                                                          "Change %n Object/s Tile",
+                                                          nullptr, tileObjects.size()));
+
+        const auto tilesets = newLayer->usedTilesets();
+        for (const SharedTileset &ts : tilesets) {
+            if (!currentMapDocument->map()->tilesets().contains(ts))
+                undoStack->push(new AddTileset(currentMapDocument, ts));
+        }
+
+        for (MapObject *object : std::as_const(tileObjects)) {
+            const bool updateSize = object->size() == object->tileObjectSize();
+            undoStack->push(new ChangeMapObject(currentMapDocument, object,
+                                                MapObject::CellProperty,
+                                                QVariant::fromValue(newLayer)));
+            if (updateSize) {
+                undoStack->push(new ChangeMapObject(currentMapDocument, object,
+                                                    MapObject::SizeProperty,
+                                                    object->tileObjectSize()));
+            }
+        }
+
+        undoStack->endMacro();
+        return;
+    }
+
     auto changeMapObjectCommand = new ChangeMapObjectsTile(currentMapDocument, tileObjects, tile());
     currentMapDocument->undoStack()->push(changeMapObjectCommand);
 }
@@ -639,9 +703,14 @@ void AbstractObjectTool::showContextMenu(MapObject *clickedObject,
                                                     selectedObjects.end(),
                                                     isResizedTileObject));
 
-        auto changeTileAction = menu.addAction(tr("Replace Tile"), this, &AbstractObjectTool::changeTile);
-        changeTileAction->setEnabled(tile() && (!selectedObjects.first()->isTemplateBase() ||
-                                                tile()->tileset()->isExternal()));
+        const TileLayer *stampLayer = selectedTileLayer(toolManager());
+        const bool isMultiSelection = stampLayer && !stampLayer->isEmpty() &&
+                                      (stampLayer->width() > 1 || stampLayer->height() > 1);
+        auto changeTileAction = menu.addAction(isMultiSelection ? tr("Replace Tiles") : tr("Replace Tile"),
+                                               this, &AbstractObjectTool::changeTile);
+        changeTileAction->setEnabled((isMultiSelection || tile()) &&
+                                     (!selectedObjects.first()->isTemplateBase() ||
+                                      !tile() || tile()->tileset()->isExternal()));
     }
 
     bool onlyRectangleObjectSelected = std::all_of(selectedObjects.begin(),
