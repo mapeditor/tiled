@@ -300,6 +300,7 @@ TilesetView::TilesetView(QWidget *parent)
     , mZoomable(new Zoomable(this))
     , mImageMissingIcon(QStringLiteral("://images/32/image-missing.png"))
 {
+    setMouseTracking(true);
     setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
     setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     setItemDelegate(new TileDelegate(this, this));
@@ -600,6 +601,12 @@ void TilesetView::mousePressEvent(QMouseEvent *event)
 
 void TilesetView::mouseMoveEvent(QMouseEvent *event)
 {
+    const QModelIndex index = indexAt(event->pos());
+    if (index.isValid())
+        emit hoveredPositionChanged(QPoint(index.column(), index.row()));
+    else
+        emit hoveredPositionChanged(QPoint(-1, -1));
+
     if (!mEditWangSet) {
         QTableView::mouseMoveEvent(event);
         return;
@@ -699,6 +706,8 @@ void TilesetView::mouseReleaseEvent(QMouseEvent *event)
 
 void TilesetView::leaveEvent(QEvent *event)
 {
+    emit hoveredPositionChanged(QPoint(-1, -1));
+
     if (mHoveredIndex.isValid()) {
         const QModelIndex previousHoveredIndex = mHoveredIndex;
         mHoveredIndex = QModelIndex();

@@ -317,6 +317,12 @@ void TilesetEditor::addDocument(Document *document)
     connect(view, &TilesetView::wangColorImageSelected, this, &TilesetEditor::setWangColorImage);
     connect(view, &TilesetView::wangIdUsedChanged, mWangDock, &WangDock::onWangIdUsedChanged);
     connect(view, &TilesetView::currentWangIdChanged, mWangDock, &WangDock::onCurrentWangIdChanged);
+    connect(view, &TilesetView::hoveredPositionChanged, this, [this](const QPoint &position) {
+        if (position.x() >= 0 && position.y() >= 0)
+            mStatusInfoLabel->setText(tr("%1, %2").arg(position.x()).arg(position.y()));
+        else
+            mStatusInfoLabel->clear();
+    });
 
     QItemSelectionModel *s = view->selectionModel();
     connect(s, &QItemSelectionModel::selectionChanged, this, &TilesetEditor::selectionChanged);
