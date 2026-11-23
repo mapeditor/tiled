@@ -101,6 +101,7 @@ public:
     void updateBackgroundColor();
 
 signals:
+    void hoveredPositionChanged(const QPoint &position);
     void wangSetImageSelected(Tile *tile);
     void wangColorImageSelected(Tile *tile, int index);
     void wangIdUsedChanged(WangId wangId);
