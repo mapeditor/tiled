@@ -1233,17 +1233,30 @@ void TilesetDock::tilesetFileNameChanged(const QString &fileName)
     updateActions();
 }
 
+
 void TilesetDock::refreshTilesetMenu()
 {
     mTilesetMenu->clear();
 
     const int currentIndex = mTabBar->currentIndex();
 
-    for (int i = 0; i < mTabBar->count(); ++i) {
-        QAction *action = mTilesetMenu->addAction(
-            mTabBar->tabText(i),
-            [=] { mTabBar->setCurrentIndex(i); });
+    // Keep the menu labels within the available screen width.
+    const int maxTextWidth =
+            mTilesetMenu->screen()->availableGeometry().width() * 3 / 5;
 
+    const QFontMetrics metrics(mTilesetMenu->font());
+
+    for (int i = 0; i < mTabBar->count(); ++i) {
+        const QString fullName = mTabBar->tabText(i);
+
+        const QString displayName = metrics.elidedText(
+                    fullName, Qt::ElideMiddle, maxTextWidth);
+
+        QAction *action = mTilesetMenu->addAction(
+                    displayName,
+                    [=] { mTabBar->setCurrentIndex(i); });
+
+        action->setToolTip(fullName);
         action->setCheckable(true);
         mTilesetActionGroup->addAction(action);
 
@@ -1254,8 +1267,9 @@ void TilesetDock::refreshTilesetMenu()
     mTilesetMenu->addSeparator();
     mTilesetMenu->addAction(mShowTilesetFilter);
     mTilesetMenu->addAction(
-        ActionManager::action("AddExternalTileset"));
+                ActionManager::action("AddExternalTileset"));
 }
+
 
 void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
 {
