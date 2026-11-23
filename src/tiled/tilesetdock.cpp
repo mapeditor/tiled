@@ -1240,18 +1240,21 @@ void TilesetDock::refreshTilesetMenu()
     const int currentIndex = mTabBar->currentIndex();
 
     for (int i = 0; i < mTabBar->count(); ++i) {
-        QAction *action = mTilesetMenu->addAction(mTabBar->tabText(i),
-                                                  [=] { mTabBar->setCurrentIndex(i); });
+        QAction *action = mTilesetMenu->addAction(
+            mTabBar->tabText(i),
+            [=] { mTabBar->setCurrentIndex(i); });
 
         action->setCheckable(true);
         mTilesetActionGroup->addAction(action);
+
         if (i == currentIndex)
             action->setChecked(true);
     }
 
     mTilesetMenu->addSeparator();
     mTilesetMenu->addAction(mShowTilesetFilter);
-    mTilesetMenu->addAction(ActionManager::action("AddExternalTileset"));
+    mTilesetMenu->addAction(
+        ActionManager::action("AddExternalTileset"));
 }
 
 void TilesetDock::swapTiles(Tile *tileA, Tile *tileB)
