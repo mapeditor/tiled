@@ -125,7 +125,7 @@ TileLayerWangEdit *EditableTileLayer::wangEdit(EditableWangSet *wangSet)
     return new TileLayerWangEdit(this, wangSet);
 }
 
-void EditableTileLayer::applyChangesFrom(TileLayer *changes, bool mergeable)
+void EditableTileLayer::applyChangesFrom(TileLayer *changes, bool mergeable, bool notify)
 {
     // Determine painted region and normalize the changes layer
     auto paintedRegion = changes->region([] (const Cell &cell) { return cell.checked(); });
@@ -155,6 +155,12 @@ void EditableTileLayer::applyChangesFrom(TileLayer *changes, bool mergeable)
                 new AddTileset(mapDocument, tileset, paint);
 
         map()->push(paint);
+
+        if (notify) {
+            // Emit regionEdited to trigger Automap While Drawing
+            if (tileLayer()->map() == mapDocument->map())
+                emit mapDocument->regionEdited(paintedRegion, tileLayer());
+        }
     } else {
         // Add any used tilesets that aren't yet part of the target map
         if (auto map = tileLayer()->map())
