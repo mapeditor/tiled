@@ -32,10 +32,7 @@ namespace Tiled {
 FileChangedWarning::FileChangedWarning(QWidget *parent)
     : QWidget(parent)
     , mLabel(new QLabel(this))
-    , mButtons(new QDialogButtonBox(QDialogButtonBox::Yes |
-                                    QDialogButtonBox::No,
-                                    Qt::Horizontal,
-                                    this))
+    , mButtons(new QDialogButtonBox(Qt::Horizontal, this))
 {
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(mLabel);
@@ -43,10 +40,60 @@ FileChangedWarning::FileChangedWarning(QWidget *parent)
     layout->addStretch(1);
     setLayout(layout);
 
-    retranslateUi();
+    setState(FileChanged);
+}
 
-    connect(mButtons, &QDialogButtonBox::accepted, this, &FileChangedWarning::reload);
-    connect(mButtons, &QDialogButtonBox::rejected, this, &FileChangedWarning::ignore);
+void FileChangedWarning::setState(State state)
+{
+    mCurrentState = state;  
+    setupButtonsForState(state);
+
+    switch (state) {
+    case FileChanged:
+        mLabel->setText(tr("File change detected. Discard changes and reload the file?"));
+        break;
+    case FileDeleted:
+        mLabel->setText(tr("This file was deleted on disk."));
+        break;
+    case FileRecreated:
+        mLabel->setText(tr("File was recreated on disk."));
+        break;
+    }
+}
+
+void FileChangedWarning::setupButtonsForState(State state)
+{
+    const QList<QAbstractButton*> buttons = mButtons->buttons();
+    for (QAbstractButton *button : buttons) {
+        mButtons->removeButton(button);
+        delete button;
+    }
+
+    switch (state) {
+    case FileChanged: {
+        QPushButton *reloadButton = mButtons->addButton(tr("Reload"), QDialogButtonBox::AcceptRole);
+        QPushButton *ignoreButton = mButtons->addButton(tr("Ignore"), QDialogButtonBox::RejectRole);
+        connect(reloadButton, &QPushButton::clicked, this, &FileChangedWarning::reload);
+        connect(ignoreButton, &QPushButton::clicked, this, &FileChangedWarning::ignore);
+        break;
+    }
+    case FileDeleted: {
+        QPushButton *restoreButton = mButtons->addButton(tr("Restore"), QDialogButtonBox::AcceptRole);
+        QPushButton *saveAsButton = mButtons->addButton(tr("Save As..."), QDialogButtonBox::ActionRole);
+        QPushButton *closeButton = mButtons->addButton(tr("Close"), QDialogButtonBox::RejectRole);
+        connect(restoreButton, &QPushButton::clicked, this, &FileChangedWarning::restore);
+        connect(saveAsButton, &QPushButton::clicked, this, &FileChangedWarning::saveAs);
+        connect(closeButton, &QPushButton::clicked, this, &FileChangedWarning::closeDocument);
+        break;
+    }
+    case FileRecreated: {
+        QPushButton *reloadButton = mButtons->addButton(tr("Reload Disk Version"), QDialogButtonBox::AcceptRole);
+        QPushButton *keepButton = mButtons->addButton(tr("Override"), QDialogButtonBox::RejectRole);
+        connect(reloadButton, &QPushButton::clicked, this, &FileChangedWarning::reload);
+        connect(keepButton, &QPushButton::clicked, this, &FileChangedWarning::ignore);
+        break;
+    }
+    }
 }
 
 void FileChangedWarning::changeEvent(QEvent *event)
@@ -59,9 +106,7 @@ void FileChangedWarning::changeEvent(QEvent *event)
 
 void FileChangedWarning::retranslateUi()
 {
-    mLabel->setText(tr("File change detected. Discard changes and reload the file?"));
-    mButtons->button(QDialogButtonBox::Yes)->setText(tr("Reload"));
-    mButtons->button(QDialogButtonBox::No)->setText(tr("Ignore"));
+    setState(mCurrentState); 
 }
 
 void FileChangedWarning::paintEvent(QPaintEvent *event)
