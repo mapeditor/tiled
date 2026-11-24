@@ -248,6 +248,11 @@ bool Preferences::highlightCurrentLayer() const
     return get("Interface/HighlightCurrentLayer", false);
 }
 
+bool Preferences::floorMode() const
+{
+    return get("Interface/FloorMode", false);
+}
+
 bool Preferences::highlightHoveredObject() const
 {
     return get("Interface/HighlightHoveredObject", true);
@@ -447,6 +452,12 @@ void Preferences::setHighlightCurrentLayer(bool highlight)
 {
     setValue(QLatin1String("Interface/HighlightCurrentLayer"), highlight);
     emit highlightCurrentLayerChanged(highlight);
+}
+
+void Preferences::setFloorMode(bool enabled)
+{
+    setValue(QLatin1String("Interface/FloorMode"), enabled);
+    emit floorModeChanged(enabled);
 }
 
 void Preferences::setHighlightHoveredObject(bool highlight)

@@ -78,6 +78,7 @@ public:
     qreal objectLineWidth() const;
 
     bool highlightCurrentLayer() const;
+    bool floorMode() const;
     bool highlightHoveredObject() const;
     bool showTilesetGrid() const;
 
@@ -218,6 +219,7 @@ public slots:
     void setGridMajorY(int gridMajorY);
     void setObjectLineWidth(qreal lineWidth);
     void setHighlightCurrentLayer(bool highlight);
+    void setFloorMode(bool enabled);
     void setHighlightHoveredObject(bool highlight);
     void setShowTilesetGrid(bool showTilesetGrid);
     void setRestoreSessionOnStartup(bool enabled);
@@ -243,6 +245,7 @@ signals:
     void gridMajorChanged(QSize gridMajor);
     void objectLineWidthChanged(qreal lineWidth);
     void highlightCurrentLayerChanged(bool highlight);
+    void floorModeChanged(bool enabled);
     void highlightHoveredObjectChanged(bool highlight);
     void showTilesetGridChanged(bool showTilesetGrid);
     void objectLabelVisibilityChanged(ObjectLabelVisiblity);

@@ -133,9 +133,14 @@ private:
 
     void updateBoundingRect();
     void updateSelectedLayersHighlight();
+    bool isFloorModeActive() const;
+    void applyFloorMode();
+    int currentFloorIndex() const;
+    void applyFloorState(Layer *layer, QGraphicsItem *layerItem, int currentFloor) const;
 
     MapDocumentPtr mMapDocument;
     QGraphicsRectItem *mDarkRectangle;
+    bool mFloorModeApplied = false;
     QGraphicsRectItem *mBorderRectangle;
     std::unique_ptr<TileSelectionItem> mTileSelectionItem;
     std::unique_ptr<TileGridItem> mTileGridItem;

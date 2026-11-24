@@ -269,6 +269,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     ActionManager::registerAction(mUi->actionFitInView, "FitInView");
     ActionManager::registerAction(mUi->actionFullScreen, "FullScreen");
     ActionManager::registerAction(mUi->actionHighlightCurrentLayer, "HighlightCurrentLayer");
+    ActionManager::registerAction(mUi->actionFloorMode, "FloorMode");
     ActionManager::registerAction(mUi->actionHighlightHoveredObject, "HighlightHoveredObject");
     ActionManager::registerAction(mUi->actionGoToTile, "GoToTile");
     ActionManager::registerAction(mUi->actionLabelForHoveredObject, "LabelForHoveredObject");
@@ -327,11 +328,13 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     QIcon undoIcon(QLatin1String(":images/16/edit-undo.png"));
     QIcon searchActionsIcon(QLatin1String(":images/16/edit-find.png"));
     QIcon highlightCurrentLayerIcon(QLatin1String("://images/scalable/highlight-current-layer-16.svg"));
+    QIcon floorModeIcon(QLatin1String("://images/scalable/floor-mode-16.svg"));
 
     openIcon.addFile(QLatin1String(":images/24/document-open.png"));
     saveIcon.addFile(QLatin1String(":images/24/document-save.png"));
     searchActionsIcon.addFile(QLatin1String(":images/24/edit-find.png"));
     highlightCurrentLayerIcon.addFile(QLatin1String("://images/scalable/highlight-current-layer-24.svg"));
+    floorModeIcon.addFile(QLatin1String("://images/scalable/floor-mode-24.svg"));
 
 #ifndef Q_OS_MAC
     QIcon tiledIcon(QLatin1String(":images/16/tiled.png"));
@@ -438,6 +441,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     mUi->actionShowTileCollisionShapes->setChecked(preferences->showTileCollisionShapes());
     mUi->actionEnableParallax->setChecked(preferences->parallaxEnabled());
     mUi->actionHighlightCurrentLayer->setChecked(preferences->highlightCurrentLayer());
+    mUi->actionFloorMode->setChecked(preferences->floorMode());
     mUi->actionHighlightHoveredObject->setChecked(preferences->highlightHoveredObject());
     connect(mUi->menuSnapping, &QMenu::aboutToShow, this, [this, preferences] {
         updateSnappingActions(preferences->snapMode());
@@ -448,6 +452,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     mUi->actionHighlightCurrentLayer->setIcon(highlightCurrentLayerIcon);
     mUi->actionHighlightCurrentLayer->setIconVisibleInMenu(false);
+
+    mUi->actionFloorMode->setIcon(floorModeIcon);
+    mUi->actionFloorMode->setIconVisibleInMenu(false);
 
 #ifdef Q_OS_MAC
     mUi->actionFullScreen->setShortcuts(QKeySequence::FullScreen);
@@ -587,6 +594,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     });
     connect(mUi->actionHighlightCurrentLayer, &QAction::toggled,
             preferences, &Preferences::setHighlightCurrentLayer);
+    connect(mUi->actionFloorMode, &QAction::toggled,
+            preferences, &Preferences::setFloorMode);
     connect(mUi->actionHighlightHoveredObject, &QAction::toggled,
             preferences, &Preferences::setHighlightHoveredObject);
     connect(mUi->actionZoomIn, &QAction::triggered, this, &MainWindow::zoomIn);
