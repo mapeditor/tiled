@@ -121,6 +121,7 @@ signals:
     void addRequested(bool focus = true);
 
     void contextMenuRequested(const QPoint &globalPos);
+    void renameRequested();
 
 private:
     friend class GroupProperty;
