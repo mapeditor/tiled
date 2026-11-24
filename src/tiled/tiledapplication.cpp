@@ -37,22 +37,9 @@
 
 using namespace Tiled;
 
-#define STRINGIFY(x) #x
-#define AS_STRING(x) STRINGIFY(x)
-
 TiledApplication::TiledApplication(int &argc, char **argv)
     : QtSingleApplication(argc, argv)
 {
-    setOrganizationDomain(QLatin1String("mapeditor.org"));
-#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
-    setApplicationName(QLatin1String("Tiled"));
-#else
-    setApplicationName(QLatin1String("tiled"));
-#endif
-    setApplicationDisplayName(QLatin1String("Tiled"));
-    setApplicationVersion(QLatin1String(AS_STRING(TILED_VERSION)));
-    setDesktopFileName(QLatin1String("org.mapeditor.Tiled"));
-
     LanguageManager::instance()->installTranslators();
 
     connect(this, &QtSingleApplication::messageReceived,

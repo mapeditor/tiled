@@ -183,6 +183,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
         QDesktopServices::openUrl(QUrl::fromLocalFile(extensionsPath));
     });
 
+    connect(mUi->scriptServer, &QCheckBox::toggled,
+            preferences, &Preferences::setScriptServerEnabled);
+
     resize(sizeHint());
 }
 
@@ -236,6 +239,7 @@ void PreferencesDialog::fromPreferences()
     mUi->preciseTileObjectSelection->setChecked(MapObjectItem::preciseTileObjectSelection);
     if (mUi->openGL->isEnabled())
         mUi->openGL->setChecked(prefs->useOpenGL());
+    mUi->scriptServer->setChecked(prefs->scriptServerEnabled());
     mUi->wheelZoomsByDefault->setChecked(prefs->wheelZoomsByDefault());
     mUi->autoScrolling->setChecked(MapView::ourAutoScrollingEnabled);
     mUi->smoothScrolling->setChecked(MapView::ourSmoothScrollingEnabled);
