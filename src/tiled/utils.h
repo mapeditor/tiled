@@ -94,6 +94,7 @@ QSize dpiScaled(QSize value);
 QPoint dpiScaled(QPoint value);
 QRectF dpiScaled(QRectF value);
 QSize smallIconSize();
+QSize smallToolbarIconSize();
 
 bool isZoomInShortcut(QKeyEvent *event);
 bool isZoomOutShortcut(QKeyEvent *event);
