@@ -30,6 +30,7 @@
 #include "preferences.h"
 #include "tileanimationdriver.h"
 #include "utils.h"
+#include "viewportoverlayitem.h"
 #include "zoomable.h"
 
 #include <QApplication>
@@ -478,6 +479,12 @@ void MapView::paintEvent(QPaintEvent *event)
         scene->setPainterScale(scale());
 
     QGraphicsView::paintEvent(event);
+}
+
+void MapView::scrollContentsBy(int dx, int dy)
+{
+    QGraphicsView::scrollContentsBy(dx, dy);
+    updateViewRect();
 }
 
 void MapView::hideEvent(QHideEvent *event)

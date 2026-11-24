@@ -57,6 +57,7 @@ enum UndoCommands {
     Cmd_ChangeMapStaggerAxis,
     Cmd_ChangeMapStaggerIndex,
     Cmd_ChangeMapTileSize,
+    Cmd_ChangeMapViewportSize,
     Cmd_ChangeObjectGroupColor,
     Cmd_ChangeObjectGroupDrawOrder,
     Cmd_ChangeSelectedArea,
