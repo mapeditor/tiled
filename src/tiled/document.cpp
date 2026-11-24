@@ -313,6 +313,11 @@ void Document::setIgnoreBrokenLinks(bool ignoreBrokenLinks)
     emit ignoreBrokenLinksChanged(ignoreBrokenLinks);
 }
 
+void Document::refreshLastSaved(const QString &fileName)
+{
+    mLastSaved = QFileInfo(fileName).lastModified();
+}
+
 void Document::setChangedOnDisk(bool changedOnDisk)
 {
     mChangedOnDisk = changedOnDisk;
