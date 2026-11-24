@@ -261,6 +261,11 @@ void EditableMapObject::setTextColor(const QColor &textColor)
     setMapObjectProperty(MapObject::TextColorProperty, textColor);
 }
 
+void EditableMapObject::setColor(const QColor &color)
+{
+    setMapObjectProperty(MapObject::ColorProperty, color);
+}
+
 void EditableMapObject::setTile(EditableTile *tile)
 {
     if (Document *doc = document()) {

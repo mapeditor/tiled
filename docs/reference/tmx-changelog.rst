@@ -4,6 +4,13 @@ TMX Changelog
 Below are described the changes/additions that were made to the
 :doc:`tmx-map-format` for recent versions of Tiled.
 
+Tiled 1.13
+----------
+
+-  Added ``color`` attribute to :ref:`tmx-object` to override the color used
+   to display the object. Objects without this attribute keep using the color
+   of their :ref:`object layer <tmx-objectgroup>`.
+
 Tiled 1.12
 ----------
 

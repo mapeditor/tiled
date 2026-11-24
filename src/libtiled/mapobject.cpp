@@ -274,16 +274,21 @@ Alignment MapObject::alignment(const Map *map) const
 
 /**
  * A helper function to determine the color of a map object. The color is
- * determined first of all by the object class, and otherwise by the group
- * that the object is in. If still no color is defined, it defaults to
- * gray.
+ * determined first of all by the object itself, then by the object class,
+ * and otherwise by the group that the object is in. If still no color is
+ * defined, it defaults to gray.
+ *
+ * Note that an object without a color of its own (an invalid color) follows
+ * the color of the object layer it is part of.
  */
 MapObjectColors MapObject::effectiveColors() const
 {
     MapObjectColors colors;
     bool drawFill = true;
 
-    if (auto classType = Object::propertyTypes().findClassFor(effectiveClassName(), *this)) {
+    if (mColor.isValid()) {
+        colors.main = mColor;
+    } else if (auto classType = Object::propertyTypes().findClassFor(effectiveClassName(), *this)) {
         colors.main = classType->color;
         drawFill = classType->drawFill;
     } else if (mObjectGroup && mObjectGroup->color().isValid()) {
@@ -310,6 +315,7 @@ QVariant MapObject::mapObjectProperty(Property property) const
     case TextAlignmentProperty: return QVariant::fromValue(mTextData.alignment);
     case TextWordWrapProperty:  return mTextData.wordWrap;
     case TextColorProperty:     return mTextData.color;
+    case ColorProperty:         return mColor;
     case PositionProperty:      return mPos;
     case SizeProperty:          return mSize;
     case RotationProperty:      return mRotation;
@@ -333,6 +339,7 @@ void MapObject::setMapObjectProperty(Property property, const QVariant &value)
     case TextAlignmentProperty: mTextData.alignment = value.value<Qt::Alignment>(); break;
     case TextWordWrapProperty:  mTextData.wordWrap = value.toBool(); break;
     case TextColorProperty:     mTextData.color = value.value<QColor>(); break;
+    case ColorProperty:         setColor(value.value<QColor>()); break;
     case PositionProperty:      setPosition(value.toPointF()); break;
     case SizeProperty:          setSize(value.toSizeF()); break;
     case RotationProperty:      setRotation(value.toReal()); break;
@@ -376,6 +383,7 @@ MapObject *MapObject::clone() const
     o->setPolygon(mPolygon);
     o->setShape(mShape);
     o->setCell(mCell);
+    o->setColor(mColor);
     o->setRotation(mRotation);
     o->setOpacity(mOpacity);
     o->setVisible(mVisible);
@@ -392,6 +400,7 @@ void MapObject::copyPropertiesFrom(const MapObject *object)
     setPolygon(object->polygon());
     setShape(object->shape());
     setCell(object->cell());
+    setColor(object->color());
     setRotation(object->rotation());
     setOpacity(object->opacity());
     setVisible(object->isVisible());
@@ -429,6 +438,9 @@ void MapObject::syncWithTemplate()
 
     if (!propertyChanged(MapObject::CellProperty))
         setCell(base->cell());
+
+    if (!propertyChanged(MapObject::ColorProperty))
+        setColor(base->color());
 
     if (!propertyChanged(MapObject::RotationProperty))
         setRotation(base->rotation());

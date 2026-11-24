@@ -558,6 +558,10 @@ Can contain any number: :ref:`tmx-object`
    (defaults to 0)
 -  **opacity:** The opacity of the object as a value from 0 to 1. (defaults
    to 1)
+-  **color:** The color used to display the object, overriding the color of
+   the :ref:`object layer <tmx-objectgroup>` it is part of. When not set, the
+   object uses the color of its class (when defined) or the color of its
+   object layer. (optional, since 1.13)
 -  **gid:** A reference to a tile. (optional)
 -  **visible:** Whether the object is shown (1) or hidden (0). (defaults to
    1)
@@ -582,6 +586,11 @@ When the object has a ``template`` set, it will borrow all the
 properties from the specified template, properties saved with the object
 will have higher priority, i.e. they will override the template
 properties.
+
+The ``color`` attribute overrides the color of the
+:ref:`object layer <tmx-objectgroup>`, which makes it possible to visually
+distinguish objects within a single object layer. Objects without this
+attribute follow the color of their object layer.
 
 Can contain at most one: :ref:`tmx-properties`, :ref:`tmx-ellipse` (since 0.9),
 :ref:`tmx-capsule` (since 1.12), :ref:`tmx-point` (since 1.1),

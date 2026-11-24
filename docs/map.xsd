@@ -472,6 +472,7 @@
     <xs:attribute name="rotation" type="degreesT" use="optional" default="0"/>
     <xs:attribute name="gid" type="tileId" use="optional" default="0"/>
     <xs:attribute name="visible" type="xs:boolean" use="optional" default="1"/>
+    <xs:attribute name="color" type="hexColorT" use="optional"/>
   </xs:attributeGroup>
 
 </xs:schema>

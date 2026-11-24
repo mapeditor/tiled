@@ -126,4 +126,5 @@
   width       CDATA   #IMPLIED
   height      CDATA   #IMPLIED
   gid         CDATA   #IMPLIED
+  color       CDATA   #IMPLIED
 >
