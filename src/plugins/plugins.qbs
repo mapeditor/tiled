@@ -6,6 +6,7 @@ Project {
         "defold",
         "defoldcollection",
         "droidcraft",
+        "enigma",
         "flare",
         "gmx",
         "json",
