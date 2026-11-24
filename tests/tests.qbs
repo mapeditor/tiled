@@ -5,6 +5,7 @@ Project {
 
     references: [
         "automapping",
+        "export",
         "mapreader",
         "properties",
         "scriptmodule",
