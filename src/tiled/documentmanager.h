@@ -217,6 +217,9 @@ private:
 
     bool askForAdjustment(const Tileset &tileset);
 
+    void autosaveIntervalChanged(int seconds);
+    void performAutosave();
+
     void addToTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
     void removeFromTilesetDocument(const SharedTileset &tileset, MapDocument *mapDocument);
 
@@ -248,6 +251,9 @@ private:
     QUndoGroup *mUndoGroup;
     FileSystemWatcher *mFileSystemWatcher;
     QHash<QString, Document*> mDocumentByFileName;
+
+    QTimer *mAutosaveTimer;
+    QSet<Document*> mDocumentsPendingAutosave;
 
     static DocumentManager *mInstance;
 
