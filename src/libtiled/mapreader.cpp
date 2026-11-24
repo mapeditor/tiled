@@ -807,10 +807,15 @@ void MapReaderPrivate::readTilesetWangSets(Tileset &tileset)
                         }
                     }
 
-                    if (!wangSet->wangIdIsValid(wangId) || !ok) {
-                        xml.raiseError(QStringLiteral("Invalid wangId \"%1\" given for tileId %2").arg(wangIdString.toString(),
-                                                                                                       QString::number(tileId)));
-                        return;
+                    if (!ok || !wangSet->wangIdIsValid(wangId)) {
+                        // Skip invalid wang tiles rather than aborting the
+                        // entire wangset load. This can happen when a tileset
+                        // was saved with a newer Tiled version that supported
+                        // more colors (e.g. 255) than the current limit.
+                        qWarning() << "Skipping invalid wangId" << wangIdString.toString()
+                                   << "for tileId" << tileId;
+                        xml.skipCurrentElement();
+                        continue;
                     }
 
                     wangSet->setWangId(tileId, wangId);
