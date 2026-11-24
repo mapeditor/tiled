@@ -98,6 +98,12 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     mActionGroupLayers = new QAction(this);
     mActionUngroupLayers = new QAction(this);
 
+    mActionCopyLayers = new QAction(this);
+    mActionCopyLayers->setShortcut((Qt::CTRL | Qt::ALT) + Qt::Key_C);
+
+    mActionPasteLayers = new QAction(this);
+    mActionPasteLayers->setShortcut((Qt::CTRL | Qt::ALT) + Qt::Key_V);
+
     mActionDuplicateLayers = new QAction(this);
     mActionDuplicateLayers->setShortcut((Qt::CTRL | Qt::SHIFT) + Qt::Key_D);
     mActionDuplicateLayers->setIcon(
@@ -185,6 +191,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     connect(mActionGroupLayers, &QAction::triggered, this, &MapDocumentActionHandler::groupLayers);
     connect(mActionUngroupLayers, &QAction::triggered, this, &MapDocumentActionHandler::ungroupLayers);
 
+    connect(mActionCopyLayers, &QAction::triggered, this, &MapDocumentActionHandler::copyLayers);
+    connect(mActionPasteLayers, &QAction::triggered, this, &MapDocumentActionHandler::pasteLayers);
     connect(mActionDuplicateLayers, &QAction::triggered, this, &MapDocumentActionHandler::duplicateLayers);
     connect(mActionMergeLayersDown, &QAction::triggered, this, &MapDocumentActionHandler::mergeLayersDown);
     connect(mActionSelectPreviousLayer, &QAction::triggered, this, &MapDocumentActionHandler::selectPreviousLayer);
@@ -216,6 +224,8 @@ MapDocumentActionHandler::MapDocumentActionHandler(QObject *parent)
     ActionManager::registerAction(mActionGroupLayers, "GroupLayers");
     ActionManager::registerAction(mActionUngroupLayers, "UngroupLayers");
 
+    ActionManager::registerAction(mActionCopyLayers, "CopyLayers");
+    ActionManager::registerAction(mActionPasteLayers, "PasteLayers");
     ActionManager::registerAction(mActionDuplicateLayers, "DuplicateLayers");
     ActionManager::registerAction(mActionMergeLayersDown, "MergeLayersDown");
     ActionManager::registerAction(mActionSelectPreviousLayer, "SelectPreviousLayer");
@@ -259,6 +269,8 @@ void MapDocumentActionHandler::retranslateUi()
     mActionGroupLayers->setText(tr("&Group Layers"));
     mActionUngroupLayers->setText(tr("&Ungroup Layers"));
 
+    mActionCopyLayers->setText(tr("&Copy Layers"));
+    mActionPasteLayers->setText(tr("&Paste Layers"));
     mActionDuplicateLayers->setText(tr("&Duplicate Layers"));
     mActionMergeLayersDown->setText(tr("&Merge Layer Down"));   // todo: make plural after string-freeze
     mActionRemoveLayers->setText(tr("&Remove Layers"));
@@ -729,6 +741,104 @@ void MapDocumentActionHandler::ungroupLayers()
         mMapDocument->ungroupLayers(mMapDocument->selectedLayers());
 }
 
+void MapDocumentActionHandler::copyLayers()
+{
+    if (!mMapDocument)
+        return;
+
+    const QList<Layer *> selectedLayers = mMapDocument->selectedLayersOrdered();
+    if (selectedLayers.isEmpty())
+        return;
+
+    // Create a temporary map to store the copied layers
+    Map *map = mMapDocument->map();
+    Map::Parameters mapParameters = map->parameters();
+    mapParameters.infinite = false;
+    Map copyMap(mapParameters);
+
+    QList<Layer *> layersToCopy;
+
+    // Copy layers in the right order (groups before their children)
+    LayerIterator iterator(map);
+    iterator.toBack();
+    while (Layer *layer = iterator.previous())
+        if (selectedLayers.contains(layer))
+            layersToCopy.append(layer);
+
+    ObjectReferencesHelper objectRefs(map);
+
+    // Clone the layers, reassigning any layer and object IDs
+    while (!layersToCopy.isEmpty()) {
+        Layer *original = layersToCopy.takeFirst();
+        Layer *clone = original->clone();
+
+        // If a group layer gets copied, make sure any children are removed
+        // from the remaining list of layers to copy
+        if (original->isGroupLayer()) {
+            layersToCopy.erase(std::remove_if(layersToCopy.begin(),
+                                             layersToCopy.end(),
+                                             [&] (Layer *layer) {
+                                  return layer->isParentOrSelf(original);
+                              }), layersToCopy.end());
+        }
+
+        objectRefs.reassignIds(clone);
+        copyMap.addLayer(clone);
+    }
+
+    objectRefs.rewire();
+
+    // Resolve the set of tilesets used by the copied layers
+    copyMap.addTilesets(copyMap.usedTilesets());
+
+    ClipboardManager::instance()->setMap(copyMap);
+}
+
+void MapDocumentActionHandler::pasteLayers()
+{
+    if (!mMapDocument)
+        return;
+
+    std::unique_ptr<Map> clipboardMap = ClipboardManager::instance()->map();
+    if (!clipboardMap || clipboardMap->layerCount() == 0)
+        return;
+
+    Map *map = mMapDocument->map();
+    const QList<Layer *> selectedLayers = mMapDocument->selectedLayers();
+
+    // Find the top-most selected layer to determine where to paste
+    Layer *topLayer = selectedLayers.isEmpty() ? nullptr : selectedLayers.last();
+    GroupLayer *targetParent = topLayer ? topLayer->parentLayer() : nullptr;
+
+    int targetIndex;
+    if (topLayer)
+        targetIndex = topLayer->siblingIndex() + 1;
+    else
+        targetIndex = map->layerCount();
+
+    mMapDocument->undoStack()->beginMacro(tr("Paste Layers"));
+
+    ObjectReferencesHelper objectRefs(map);
+    QList<Layer *> newLayers;
+
+    // Clone each layer from the clipboard and add it to the map
+    for (int i = 0; i < clipboardMap->layerCount(); ++i) {
+        Layer *clipboardLayer = clipboardMap->layerAt(i);
+        Layer *clone = clipboardLayer->clone();
+
+        objectRefs.reassignIds(clone);
+        newLayers.append(clone);
+
+        mMapDocument->undoStack()->push(new AddLayer(mMapDocument, targetIndex, clone, targetParent));
+        targetIndex++;
+    }
+
+    objectRefs.rewire();
+
+    mMapDocument->undoStack()->endMacro();
+    mMapDocument->switchSelectedLayers(newLayers);
+}
+
 void MapDocumentActionHandler::duplicateLayers()
 {
     if (mMapDocument)
@@ -883,6 +993,9 @@ void MapDocumentActionHandler::updateActions()
     mActionGroupLayers->setEnabled(!selectedLayers.isEmpty());
     mActionUngroupLayers->setEnabled(std::any_of(selectedLayers.begin(), selectedLayers.end(),
                                                  [] (Layer *layer) { return layer->isGroupLayer() || layer->parentLayer(); }));
+
+    mActionCopyLayers->setEnabled(!selectedLayers.isEmpty());
+    mActionPasteLayers->setEnabled(ClipboardManager::instance()->hasMap());
 
     const bool hasPreviousLayer = LayerIterator(currentLayer).previous();
     const bool hasNextLayer = LayerIterator(currentLayer).next();
