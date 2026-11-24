@@ -78,18 +78,18 @@ void AutomappingManager::autoMap()
         }
     }
 
-    autoMapInternal(region, nullptr);
+    autoMapInternal(region, false);
 }
 
 void AutomappingManager::autoMapRegion(const QRegion &region)
 {
-    autoMapInternal(region, nullptr);
+    autoMapInternal(region, false);
 }
 
-void AutomappingManager::onRegionEdited(const QRegion &where, TileLayer *touchedLayer)
+void AutomappingManager::onRegionEdited(const QRegion &where)
 {
     if (automappingWhileDrawing)
-        autoMapInternal(where, touchedLayer);
+        autoMapInternal(where, true);
 }
 
 void AutomappingManager::onMapFileNameChanged()
@@ -99,7 +99,7 @@ void AutomappingManager::onMapFileNameChanged()
 }
 
 void AutomappingManager::autoMapInternal(const QRegion &where,
-                                         const TileLayer *touchedLayer)
+                                         bool whileDrawing)
 {
     mError.clear();
     mWarning.clear();
@@ -107,17 +107,15 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
     if (!mMapDocument)
         return;
 
-    const bool automatic = touchedLayer != nullptr;
-
     // Even if no AutoMapper instance will be executed, we still want to report
     // any warnings or errors that might have been reported while interpreting
     // the rule maps.
     auto reportErrors = qScopeGuard([=] {
         if (!mWarning.isEmpty())
-            emit warningsOccurred(automatic);
+            emit warningsOccurred(whileDrawing);
 
         if (!mError.isEmpty())
-            emit errorsOccurred(automatic);
+            emit errorsOccurred(whileDrawing);
     });
 
     if (!mLoaded) {
@@ -148,17 +146,8 @@ void AutomappingManager::autoMapInternal(const QRegion &where,
     if (autoMappers.isEmpty())
         return;
 
-    // Skip this AutoMapping run if none of the loaded rule maps actually use
-    // the touched layer.
-    if (touchedLayer) {
-        if (std::none_of(autoMappers.cbegin(),
-                         autoMappers.cend(),
-                         [=] (const AutoMapper *autoMapper) { return autoMapper->ruleLayerNameUsed(touchedLayer->name()); }))
-            return;
-    }
-
-    AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, autoMappers, where, touchedLayer);
-    aw->setMergeable(automatic);
+    AutoMapperWrapper *aw = new AutoMapperWrapper(mMapDocument, autoMappers, where);
+    aw->setMergeable(whileDrawing);
     aw->setText(tr("Apply AutoMap rules"));
 
     mMapDocument->undoStack()->push(aw);

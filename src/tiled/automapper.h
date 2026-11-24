@@ -256,9 +256,6 @@ struct TILED_EDITOR_EXPORT AutoMappingContext
     // Clones of existing tile layers that might have been changed in AutoMapper::autoMap
     std::unordered_map<TileLayer*, std::unique_ptr<TileLayer>> originalToOutputLayerMapping;
 
-    // Used to keep track of touched tile layers (only when initially non-empty)
-    QVector<const TileLayer*> touchedTileLayers;
-
 private:
     friend class AutoMapper;
 
@@ -335,13 +332,7 @@ public:
     explicit AutoMapper(std::unique_ptr<Map> rulesMap);
     ~AutoMapper();
 
-    QString rulesMapFileName() const;
-
-    /**
-     * Checks if the passed \a ruleLayerName is used as input layer in this
-     * instance of AutoMapper.
-     */
-    bool ruleLayerNameUsed(const QString &ruleLayerName) const;
+    const QString &rulesMapFileName() const;
 
     /**
      * This needs to be called directly before the autoMap call.
