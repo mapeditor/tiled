@@ -559,6 +559,7 @@ int main(int argc, char *argv[])
     }
 
     QStringList filesToOpen;
+    QString projectToOpen;
 
     for (const QString &fileName : commandLine.filesToOpen()) {
         const QFileInfo fileInfo(fileName);
@@ -570,7 +571,8 @@ int main(int argc, char *argv[])
                 return 1;
             }
             Preferences::setStartupProject(filePath);
-        } if (fileInfo.suffix() == QLatin1String("tiled-session")) {
+            projectToOpen = filePath;
+        } else if (fileInfo.suffix() == QLatin1String("tiled-session")) {
             if (!fileInfo.exists()) {
                 qWarning().noquote() << QCoreApplication::translate("Command line", "Session file '%1' not found.").arg(fileName);
                 return 1;
@@ -581,10 +583,16 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (a.isRunning() && !filesToOpen.isEmpty() && !commandLine.newInstance) {
+    if (a.isRunning() && (!filesToOpen.isEmpty() || !projectToOpen.isEmpty()) && !commandLine.newInstance) {
+        // The running instance switches to the project before opening the
+        // files, so it goes first.
+        QStringList forwardedFiles = filesToOpen;
+        if (!projectToOpen.isEmpty())
+            forwardedFiles.prepend(projectToOpen);
+
         // Files need to be absolute paths because the already running Tiled
         // instance likely does not have the same working directory.
-        QJsonDocument doc(QJsonArray::fromStringList(filesToOpen));
+        QJsonDocument doc(QJsonArray::fromStringList(forwardedFiles));
         if (a.sendMessage(QLatin1String(doc.toJson())))
             return 0;
     }

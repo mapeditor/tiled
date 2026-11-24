@@ -1014,19 +1014,35 @@ void MainWindow::newMap()
 
 void MainWindow::initializeSession()
 {
-    const auto &session = Session::current();
+    // A project passed on the command line takes precedence over the project
+    // of the session (which may have been passed on the command line as well)
+    const QString startupProject = Preferences::startupProject();
+    if (!startupProject.isEmpty() && Session::current().project != startupProject)
+        Session::switchCurrent(Session::defaultFileNameForProject(startupProject));
 
-    // Restore associated project if applicable
+    auto &session = Session::current();
+
+    // Otherwise, restore the associated project if applicable
+    const QString projectFileName = startupProject.isEmpty() ? session.project
+                                                             : startupProject;
     std::unique_ptr<Project> project;
-    if (!session.project.isEmpty())
-        project = Project::load(session.project);
+    if (!projectFileName.isEmpty())
+        project = Project::load(projectFileName);
 
     const bool projectLoaded = project != nullptr;
 
     if (projectLoaded) {
+        if (!startupProject.isEmpty()) {
+            session.setProject(project->fileName());
+            Preferences::instance()->addRecentProject(project->fileName());
+        }
         ProjectManager::instance()->setProject(std::move(project));
         updateWindowTitle();
         updateActions();
+    } else if (!startupProject.isEmpty()) {
+        QMessageBox::critical(this,
+                              tr("Error Opening Project"),
+                              tr("An error occurred while opening the project."));
     }
 
     // Script manager initialization is delayed until after the project has
