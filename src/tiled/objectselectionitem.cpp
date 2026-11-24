@@ -305,6 +305,8 @@ ObjectSelectionItem::ObjectSelectionItem(MapDocument *mapDocument,
             this, &ObjectSelectionItem::showObjectReferencesChanged);
     connect(prefs, &Preferences::objectLineWidthChanged,
             this, &ObjectSelectionItem::objectLineWidthChanged);
+    connect(prefs, &Preferences::objectReferenceLineStyleChanged,
+            this, &ObjectSelectionItem::objectReferenceLineStyleChanged);
 
     connect(prefs, &Preferences::propertyTypesChanged,
             this, &ObjectSelectionItem::updateItemColors);
@@ -759,6 +761,15 @@ void ObjectSelectionItem::objectLineWidthChanged()
     for (const auto &items : std::as_const(mReferencesBySourceObject))
         for (ObjectReferenceItem *item : items)
             item->update();
+}
+
+void ObjectSelectionItem::objectReferenceLineStyleChanged()
+{
+    // Line style changed: arrow rotation needs to be recalculated too,
+    // not just a repaint.
+    for (const auto &items : std::as_const(mReferencesBySourceObject))
+        for (ObjectReferenceItem *item : items)
+            item->updateLineStyle();
 }
 
 void ObjectSelectionItem::sceneFontChanged()
