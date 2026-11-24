@@ -204,6 +204,21 @@ QSharedPointer<WangColor> TilesetWangSetModel::takeWangColorAt(WangSet *wangSet,
     return wangColor;
 }
 
+/**
+ * Swaps the positions of 2 wang colors in the list.
+ *
+ * This does not change the indexs of an tiles so should be used with
+ * ChangeTileWangId->changesOnMoveColor
+ */
+void TilesetWangSetModel::swapWangColorsAt(WangSet *wangSet, int colorA, int colorB)
+{
+    Q_ASSERT(wangSet->tileset() == mTilesetDocument->tileset().data());
+    emit mTilesetDocument->changed(WangColorEvent(ChangeEvent::WangColorChanged, wangSet, colorA));
+    emit mTilesetDocument->changed(WangColorEvent(ChangeEvent::WangColorChanged, wangSet, colorB));
+    wangSet->swapWangColorsAt(colorA, colorB);
+    emitWangSetChange(wangSet);
+}
+
 void TilesetWangSetModel::emitWangSetChange(WangSet *wangSet)
 {
     const QModelIndex index = TilesetWangSetModel::index(wangSet);
