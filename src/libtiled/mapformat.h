@@ -73,6 +73,15 @@ public:
     virtual std::unique_ptr<Map> read(const QString &fileName) = 0;
 
     /**
+     * Overload that allows specifying a custom \a searchPath for resolving
+     * relative references to external tilesets and images. The default
+     * implementation ignores the search path and calls read(fileName).
+     */
+    virtual std::unique_ptr<Map> read(const QString &fileName,
+                                      const QString &searchPath)
+    { Q_UNUSED(searchPath); return read(fileName); }
+
+    /**
      * Writes the given \a map based on the suggested \a fileName.
      *
      * This function may write to a different file name or may even write to
@@ -133,6 +142,14 @@ public:
  * to the plugin manager, falling back to the TMX format if none are capable.
  */
 TILEDSHARED_EXPORT std::unique_ptr<Map> readMap(const QString &fileName,
+                                                QString *error = nullptr);
+
+/**
+ * Overload that allows specifying a custom \a searchPath for resolving
+ * relative references to external tilesets and images.
+ */
+TILEDSHARED_EXPORT std::unique_ptr<Map> readMap(const QString &fileName,
+                                                const QString &searchPath,
                                                 QString *error = nullptr);
 
 /**
