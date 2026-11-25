@@ -49,5 +49,6 @@ jobs:
       run: |
         qbs build modules.cpp.compilerWrapper:ccache
 
-    - name: Test MCP server
-      run: QT_QPA_PLATFORM=offscreen qbs run -p test_mcpserver
+    - name: Test
+      run: |
+        qbs build -p autotest-runner modules.cpp.compilerWrapper:ccache
