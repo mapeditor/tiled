@@ -12,6 +12,7 @@ if defined MINGW (
     cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022"
 )
 if errorlevel 1 exit /b 1
-cmake --build build --config Release --parallel || exit /b 1
+rem Bound compilation to avoid exhausting memory on AppVeyor workers.
+cmake --build build --config Release --parallel 2 || exit /b 1
 cmake --install build --config Release || exit /b 1
 popd
